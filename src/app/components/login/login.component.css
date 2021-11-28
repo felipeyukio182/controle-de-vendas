@@ -1,0 +1,45 @@
+.tela-cheia {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: beige;
+    font-family: monospace;
+}
+
+.login {
+    display: flex;
+    flex-direction: column;
+    background-color: floralwhite;
+    min-width: 300px;
+    min-height: 340px;
+    border-radius: 5px;
+    box-shadow: #bfbab1 3px 3px;
+}
+
+.login > h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin: 0;
+    font-size: 2rem;
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.loginForm > div {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+
+.logo {
+    max-width: 115px;
+    margin: auto;
+}

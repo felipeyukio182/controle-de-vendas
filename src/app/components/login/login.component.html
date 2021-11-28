@@ -1,0 +1,23 @@
+<app-carregando></app-carregando>
+
+<div *ngIf="!carregandoService.carregando" class="tela-cheia">
+    <main class="login">
+        <h1>Controle de Vendas</h1>
+        <img src="assets/img/alface-logo.png" class="logo" alt="logo">
+
+        <form [formGroup]="loginForm" (onSubmit)="login()" class="loginForm">
+
+            <div>
+                <label for="usuario">Usuario: </label>
+                <input id="usuario" type="text" autocomplete="off" class="form-control mb-1" formControlName="usuario">
+            </div>
+
+            <div>
+                <label for="senha">Senha: </label>
+                <input id="senha" type="password" autocomplete="off" class="form-control mb-1" formControlName="senha">
+            </div>
+
+            <button class="btn btn-primary" (click)="login()" type="submit" [disabled]="!loginForm.valid">Entrar</button>
+        </form>
+    </main>
+</div>
