@@ -12,11 +12,12 @@ export class MenuPrincipalComponent implements OnInit {
   public sidenavEstaAberta: boolean = false
   public opcaoMenuEstaAberta: boolean = false
 
-  public menuOpcoes: Array<{nome: string, icone: string, estaAberta: boolean, subOpcoes: Array<any>}> = [
+  public menuOpcoes: Array<{nome: string, icone: string, estaAberta: boolean, mouseEstaEmCima: boolean, subOpcoes: Array<any>}> = [
     {
       nome: 'Pessoas',
       icone: 'bi bi-people',
       estaAberta: false,
+      mouseEstaEmCima: false,
       subOpcoes: [
         {
           nome: 'teste1',
@@ -36,6 +37,7 @@ export class MenuPrincipalComponent implements OnInit {
       nome: 'Produtos',
       icone: 'bi bi bi-bag',
       estaAberta: false,
+      mouseEstaEmCima: false,
       subOpcoes: [
         {
           nome: 'teste12',
@@ -55,6 +57,7 @@ export class MenuPrincipalComponent implements OnInit {
       nome: 'Vendas',
       icone: 'bi bi-cart',
       estaAberta: false,
+      mouseEstaEmCima: false,
       subOpcoes: [
         {
           nome: 'teste133',
@@ -80,6 +83,12 @@ export class MenuPrincipalComponent implements OnInit {
     if(this.sidenavEstaAberta) {
       opcao.estaAberta = !opcao.estaAberta
     }
+  }
+  mostrarPopUp(opcao: any) {
+    opcao.mouseEstaEmCima = true
+  }
+  esconderPopUp(opcao: any) {
+    opcao.mouseEstaEmCima = false
   }
 
 }

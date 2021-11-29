@@ -53,6 +53,10 @@
     height: 83%;
     padding: 0px;
 }
+.lista-sidenav-li {
+    position: relative;
+    /* overflow: hidden; */
+}
 .lista-sidenav .lista-sidenav-opcoes {
     width: 100%;
     height: 50px;
@@ -68,16 +72,55 @@
     justify-content: space-between;
     padding-left: 15px;
     padding-right: 15px;
+    overflow: hidden;
 }
-.lista-sidenav > li:hover {
+.lista-sidenav .lista-sidenav-opcoes:hover {
     cursor: pointer;
     background-color: aqua;
 }
 .lista-sidenav .lista-sidenav-icone {
     font-size: 30px;
 }
-.lista-sidenav-icone-aberto-fechado {
+.lista-sidenav-icone-cima-baixo {
     font-size: 16px;
+}
+.lista-sidenav-sub-opcoes-aberta {
+    max-height: 0px;
+    overflow: hidden;
+    transition: 0.5s;
+}
+.lista-sidenav-sub-opcoes-aberta > li {
+    cursor: pointer;  
+}
+.lista-sidenav-sub-opcoes-aberta > li:hover {
+    color: white;
+}
+.lista-sidenav-sub-opcoes-aberta.lista-sidenav-sub-opcoes-mostrar {
+    max-height: 200px;
+    transition: 0.5s;
+}
+
+.lista-sidenav-sub-opcoes-fechada {
+    display: none;
+    overflow: hidden;
+    position: absolute;
+    top: 0px;
+    left: 60px;
+    background-color: yellow;
+    width: 150px;
+}
+.lista-sidenav-sub-opcoes-fechada > li:hover {
+    cursor: pointer;
+    color: white;
+}
+.lista-sidenav-sub-opcoes-fechada.lista-sidenav-sub-opcoes-fechada-mostrar {
+    display: block;
+    overflow: auto;
+}
+.lista-sidenav-sub-opcoes-titulo {
+    list-style-type: none;
+    font-size: 20px;
+    font-weight: 600;
 }
 
 

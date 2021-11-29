@@ -13,17 +13,25 @@
         </div>
 
         <ul class="lista-sidenav">
-            <li *ngFor="let opcao of menuOpcoes" class="lista-sidenav-opcoes" [ngClass]="sidenavEstaAberta ? 'lista-sidenav-opcoes-aberta' : ''" (click)="abrirFecharOpcaoMenu(opcao)">
-                <div class="lista-sidenav-opcoes-div">
-                    <i class="lista-sidenav-icone {{ opcao.icone }}"></i>
-                    <span *ngIf="sidenavEstaAberta">{{ opcao.nome }}</span>
+            <li class="lista-sidenav-li" *ngFor="let opcao of menuOpcoes" (click)="abrirFecharOpcaoMenu(opcao)">
+                
+                <div class="lista-sidenav-opcoes" [ngClass]="sidenavEstaAberta ? 'lista-sidenav-opcoes-aberta' : ''" (mouseover)="mostrarPopUp(opcao)" (mouseout)="esconderPopUp(opcao)">
+                    <div class="lista-sidenav-opcoes-div">
+                        <i class="lista-sidenav-icone {{ opcao.icone }}"></i>
+                        <span *ngIf="sidenavEstaAberta">{{ opcao.nome }}</span>
+                    </div>
+                    <i *ngIf="sidenavEstaAberta" class="lista-sidenav-icone-cima-baixo" [ngClass]="opcao.estaAberta ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
                 </div>
-                <i *ngIf="sidenavEstaAberta" class="lista-sidenav-icone-aberto-fechado" [ngClass]="opcao.estaAberta ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
-                <!-- <ul>
-                    <li>teste1</li>
-                    <li>teste2</li>
-                    <li>teste3</li>
-                </ul> -->
+
+                <ul *ngIf="sidenavEstaAberta" class="lista-sidenav-sub-opcoes-aberta" [ngClass]="opcao.estaAberta ? 'lista-sidenav-sub-opcoes-mostrar' : ''">
+                    <li *ngFor="let subopcao of opcao.subOpcoes">{{ subopcao.nome }}</li>
+                </ul>
+
+                <ul *ngIf="!sidenavEstaAberta" class="lista-sidenav-sub-opcoes-fechada" [ngClass]="opcao.mouseEstaEmCima ? 'lista-sidenav-sub-opcoes-fechada-mostrar' : ''" 
+                    (mouseover)="mostrarPopUp(opcao)" (mouseout)="esconderPopUp(opcao)">
+                    <li class="lista-sidenav-sub-opcoes-titulo">{{ opcao.nome }}</li>
+                    <li *ngFor="let subopcao of opcao.subOpcoes">{{ subopcao.nome }}</li>
+                </ul>
             </li>
         </ul>
     </nav>
