@@ -1,1 +1,32 @@
-<p>menu-principal works!</p>
+<main class="main">
+    <header class="header">
+        <div class="menu-alternar-botao" (click)="abrirFecharSidenav()">
+            <i class="bi bi-list"></i>
+        </div>
+    
+    </header>
+    <nav class="sidenav" [ngClass]="sidenavEstaAberta ? 'sidenav-aberta' : 'sidenav-fechada'">
+        <div class="logo-div">
+            <a routerLink="/home">
+                <img class="logo-alface" src="assets/img/alface-logo.png" alt="logo">
+            </a>
+        </div>
+
+        <ul class="lista-sidenav">
+            <li *ngFor="let opcao of menuOpcoes" class="lista-sidenav-opcoes" [ngClass]="sidenavEstaAberta ? 'lista-sidenav-opcoes-aberta' : ''" (click)="abrirFecharOpcaoMenu(opcao)">
+                <div class="lista-sidenav-opcoes-div">
+                    <i class="lista-sidenav-icone {{ opcao.icone }}"></i>
+                    <span *ngIf="sidenavEstaAberta">{{ opcao.nome }}</span>
+                </div>
+                <i *ngIf="sidenavEstaAberta" class="lista-sidenav-icone-aberto-fechado" [ngClass]="opcao.estaAberta ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
+                <!-- <ul>
+                    <li>teste1</li>
+                    <li>teste2</li>
+                    <li>teste3</li>
+                </ul> -->
+            </li>
+        </ul>
+    </nav>
+    <section class="section">section</section>
+    <footer class="footer">footer</footer>
+</main>

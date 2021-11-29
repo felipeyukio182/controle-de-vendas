@@ -1,0 +1,110 @@
+.main {
+    min-height: 100vh;
+    min-width: 100vw;
+    background-color: aliceblue;
+    display: grid;
+    /* grid-template-columns: 5% 10% 85%; */
+    grid-template-columns: min-content 1fr;
+    grid-template-rows: 50px 1fr 50px;
+    /* grid-template-rows: 10% 83% 7%; */
+}
+
+.header {
+    grid-column: 2/3;
+    grid-row: 1/2;
+
+    display: flex;
+    align-items: center;
+
+    background-color: aqua;
+}
+.sidenav {
+    grid-column: 1/2;
+    grid-row: 1/3;
+    transition: width 1s;
+
+    background-color: darkgoldenrod;
+}
+.sidenav-aberta {
+    width: 200px;
+    transition: width 1s;
+}
+.sidenav-fechada {
+    width: 60px;
+    transition: width 1s;
+}
+
+.logo-div {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 50px;
+    margin-bottom: 20px;
+}
+
+.logo-alface {
+    width: 50px;
+    height: 50px;
+}
+
+.lista-sidenav {
+    list-style-type: none;
+    width: 100%;
+    height: 83%;
+    padding: 0px;
+}
+.lista-sidenav .lista-sidenav-opcoes {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.lista-sidenav .lista-sidenav-opcoes-div {
+    display: flex;
+    align-items: center;
+}
+.lista-sidenav .lista-sidenav-opcoes-aberta {
+    justify-content: space-between;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.lista-sidenav > li:hover {
+    cursor: pointer;
+    background-color: aqua;
+}
+.lista-sidenav .lista-sidenav-icone {
+    font-size: 30px;
+}
+.lista-sidenav-icone-aberto-fechado {
+    font-size: 16px;
+}
+
+
+.menu-alternar-botao {
+    height: 50px;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    
+    background-color: darkgray;
+}
+.menu-alternar-botao:hover {
+    background-color: rgb(116, 116, 116);
+}
+
+.section {
+    grid-column: 2/3;
+    grid-row: 2/3;
+
+    background-color: chartreuse;
+
+}
+.footer {
+    grid-column: 1/3;
+    grid-row: 3/4;
+
+    background-color: chocolate;
+}
