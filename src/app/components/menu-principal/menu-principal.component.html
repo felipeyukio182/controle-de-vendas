@@ -1,21 +1,36 @@
 <main class="main">
     <header class="header">
-        <div class="menu-alternar-botao" (click)="abrirFecharSidenav()">
+        <div class="menu-botao" (click)="abrirFecharSidenav()">
             <i class="bi bi-list"></i>
+        </div>
+
+        <div class="header-titulo">
+            <i class="{{ this.headerService.icone }}"></i>
+            {{ this.headerService.titulo }}
+        </div>
+
+        <div class="menu-separador"></div>
+
+        <div class="menu-botao botao-fechar" (click)="this.sessaoService.sairSessao()">
+            <i class="bi bi-box-arrow-right"></i>
         </div>
     
     </header>
     <nav class="sidenav" [ngClass]="sidenavEstaAberta ? 'sidenav-aberta' : 'sidenav-fechada'">
         <div class="logo-div">
-            <a routerLink="/home">
+            <a (click)="irParaMenuPrincipal()">
                 <img class="logo-alface" src="assets/img/alface-logo.png" alt="logo">
             </a>
+            <div class="logo-titulo">
+                <span *ngIf="sidenavEstaAberta">Controle de vendas</span>
+            </div>
         </div>
 
         <ul class="lista-sidenav">
             <li class="lista-sidenav-li" *ngFor="let opcao of menuOpcoes" (click)="abrirFecharOpcaoMenu(opcao)">
                 
-                <div class="lista-sidenav-opcoes" [ngClass]="sidenavEstaAberta ? 'lista-sidenav-opcoes-aberta' : ''" (mouseover)="mostrarPopUp(opcao)" (mouseout)="esconderPopUp(opcao)">
+                <div class="lista-sidenav-opcoes" (mouseover)="mostrarPopUp(opcao)" (mouseout)="esconderPopUp(opcao)" 
+                     [ngClass]="sidenavEstaAberta ? ( opcao.estaAberta ? 'lista-sidenav-opcoes-aberta lista-sidenav-opcao-ativa' : 'lista-sidenav-opcoes-aberta' ) : ''">
                     <div class="lista-sidenav-opcoes-div">
                         <i class="lista-sidenav-icone {{ opcao.icone }}"></i>
                         <span *ngIf="sidenavEstaAberta">{{ opcao.nome }}</span>
@@ -24,17 +39,27 @@
                 </div>
 
                 <ul *ngIf="sidenavEstaAberta" class="lista-sidenav-sub-opcoes-aberta" [ngClass]="opcao.estaAberta ? 'lista-sidenav-sub-opcoes-mostrar' : ''">
-                    <li *ngFor="let subopcao of opcao.subOpcoes">{{ subopcao.nome }}</li>
+                    <li *ngFor="let subopcao of opcao.subOpcoes" (click)="irParaTela(opcao.nome, opcao.icone, subopcao.rota)">{{ subopcao.nome }}</li>
                 </ul>
 
                 <ul *ngIf="!sidenavEstaAberta" class="lista-sidenav-sub-opcoes-fechada" [ngClass]="opcao.mouseEstaEmCima ? 'lista-sidenav-sub-opcoes-fechada-mostrar' : ''" 
                     (mouseover)="mostrarPopUp(opcao)" (mouseout)="esconderPopUp(opcao)">
                     <li class="lista-sidenav-sub-opcoes-titulo">{{ opcao.nome }}</li>
-                    <li *ngFor="let subopcao of opcao.subOpcoes">{{ subopcao.nome }}</li>
+                    <li *ngFor="let subopcao of opcao.subOpcoes" (click)="irParaTela(opcao.nome, opcao.icone, subopcao.rota)">{{ subopcao.nome }}</li>
                 </ul>
             </li>
         </ul>
     </nav>
-    <section class="section">section</section>
-    <footer class="footer">footer</footer>
+    <section class="section">
+
+        <router-outlet></router-outlet>
+
+    </section>
+    <footer class="footer">
+        Feito por
+        &nbsp;
+        <strong>Felipe Yukio Fupunaga</strong>
+        &nbsp;
+        <i class="bi bi-star-fill footer-icone-estrela"></i>
+    </footer>
 </main>

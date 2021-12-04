@@ -17,7 +17,7 @@ import { TemplatesModule } from './templates/templates.module';
     AppRoutingModule,
     HttpClientModule,
     ComponentsModule,
-    TemplatesModule
+    TemplatesModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

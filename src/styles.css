@@ -5,3 +5,21 @@
 body {
     margin: 0px;
 }
+
+.tela-cheia {
+    width: 100%;
+    height: 100%;
+}
+.conteudo {
+    padding: 20px;
+}
+
+.botao-mini {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px;
+    height: 24px;
+    width: 24px;
+    font-size: 12px;
+}

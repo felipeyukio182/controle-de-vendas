@@ -1,0 +1,6 @@
+<div class="paginacao">
+  <a (click)="irParaPaginaAnterior()">&laquo;</a>
+  <a *ngFor="let l of arrayPaginas, index as i" (click)="selecionarPagina(i + 1)" [ngClass]="pagina == i + 1 ? 'ativo' : ''">{{ i + 1 }}</a>
+  <a (click)="irParaProximaPagina()">&raquo;</a>
+</div>
+  

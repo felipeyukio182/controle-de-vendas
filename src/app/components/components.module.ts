@@ -4,6 +4,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { MenuPrincipalComponent } from './menu-principal/menu-principal.component';
 import { LoginComponent } from './login/login.component';
 import { TemplatesModule } from '../templates/templates.module';
+import { RouterModule } from '@angular/router';
+import { PessoasComponent } from './pessoas/pessoas/pessoas.component';
 
 
 
@@ -11,12 +13,14 @@ import { TemplatesModule } from '../templates/templates.module';
   declarations: [
     LoginComponent,
     MenuPrincipalComponent,
+    PessoasComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    TemplatesModule
+    TemplatesModule,
+    RouterModule,
   ]
 })
 export class ComponentsModule { }

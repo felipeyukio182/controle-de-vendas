@@ -1,0 +1,57 @@
+<div class="tela-cheia">
+    
+    <div *ngIf="telaAtiva == 'consultar'" class="conteudo">
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-sm btn-primary" title="Nova pessoa" (click)="incluirPessoa()">+ Nova Pessoa</button>
+            <div>
+                <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="list.length"></app-paginacao>
+            </div>
+        </div>
+        <div>
+            <table class="table table-sm table-bordered">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">#</th>
+                        <th style="width: 30%;" >
+                            Razão Social
+                            <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
+                        </th>
+                        <th style="width: 30%;" >
+                            CNPJ/CPF
+                            <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
+                        </th>
+                        <th style="width: 15%;">
+                            Cidade
+                            <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
+                        </th>
+                        <th style="width: 10%;">
+                            UF
+                            <select class="form-select form-select-sm" name="" id="">
+                                <option value="">Todos</option>
+                                <option *ngFor="let estado of utilsService.estados" [value]="estado">{{ estado }}</option>
+                            </select>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let l of list.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
+                        <td class="d-flex align-items-center justify-content-center">
+                            <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (click)="editarPessoa(l)"></app-botao-mini>
+                            <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="excluirPessoa(l)"></app-botao-mini>
+                        </td>
+                        <td>{{ l }}</td>
+                        <td>BLABLA</td>
+                        <td>BLABLA</td>
+                        <td>BLABLA</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div *ngIf="telaAtiva != 'consultar'" class="conteudo">
+        <h1>{{ telaTitulo }}</h1>
+
+    </div>
+
+</div>

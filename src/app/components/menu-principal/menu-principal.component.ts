@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { HeaderService } from 'src/app/services/header.service';
+import { SessaoService } from 'src/app/services/sessao.service';
 
 
 
@@ -20,16 +23,8 @@ export class MenuPrincipalComponent implements OnInit {
       mouseEstaEmCima: false,
       subOpcoes: [
         {
-          nome: 'teste1',
-          rota: ''
-        },
-        {
-          nome: 'teste2',
-          rota: ''
-        },
-        {
-          nome: 'teste3',
-          rota: ''
+          nome: 'Pessoas',
+          rota: '/menuprincipal/pessoas'
         },
       ]
     },
@@ -71,7 +66,14 @@ export class MenuPrincipalComponent implements OnInit {
     },
   ]
 
-  constructor() { }
+  constructor(
+    public sessaoService: SessaoService,
+    public headerService: HeaderService,
+    private router: Router
+  ) {
+    this.headerService.icone = "bi bi-house-door"
+    this.headerService.titulo = "Menu"
+  }
 
   ngOnInit(): void {
   }
@@ -81,6 +83,12 @@ export class MenuPrincipalComponent implements OnInit {
   }
   abrirFecharOpcaoMenu(opcao?: any): void {
     if(this.sidenavEstaAberta) {
+      for(let o of this.menuOpcoes) {
+        if(o != opcao) {
+          o.estaAberta = false
+        }
+      }
+
       opcao.estaAberta = !opcao.estaAberta
     }
   }
@@ -89,6 +97,18 @@ export class MenuPrincipalComponent implements OnInit {
   }
   esconderPopUp(opcao: any) {
     opcao.mouseEstaEmCima = false
+  }
+
+  irParaTela(nome: string, icone: string, rota: string) {
+    this.headerService.icone = icone
+    this.headerService.titulo = nome
+    this.router.navigate([rota])
+  }
+
+  irParaMenuPrincipal() {
+    this.headerService.icone = "bi bi-house-door"
+    this.headerService.titulo = "Menu"
+    this.router.navigate(['/menuprincipal'])
   }
 
 }
