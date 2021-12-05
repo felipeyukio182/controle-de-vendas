@@ -13,8 +13,6 @@ export class SessaoService {
 
   ///////////////////////////////////////////////
   
-  // public headerIcon = ""
-  // public headerTitle = ""
 
   constructor(private router: Router) { }
 
@@ -27,6 +25,8 @@ export class SessaoService {
   }
 
   validarSessao(): boolean {
+    console.log(this.logado == "S")
+    console.log(window.sessionStorage.getItem("logado"))
     if(window.localStorage.getItem("usuario") && 
       (this.logado == "S" || window.sessionStorage.getItem("logado"))) {
       return true
@@ -36,6 +36,12 @@ export class SessaoService {
     }
   }
 
+
+  buscarUsuario(): string {
+    let usuario = window.localStorage.getItem("usuario") || ''
+    return JSON.parse(usuario)
+  }
+  
   buscarIdUsuario(): string {
     let usuario = window.localStorage.getItem("usuario") || ''
     return JSON.parse(usuario).id
@@ -43,7 +49,8 @@ export class SessaoService {
 
   sairSessao(): void {
     window.sessionStorage.removeItem("logado")
-    this.router.navigate(["/"])
+    this.logado = "N"
+    this.router.navigate(["/login"])
   }
   
   limparSessao(): void {

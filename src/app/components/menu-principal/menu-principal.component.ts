@@ -24,7 +24,7 @@ export class MenuPrincipalComponent implements OnInit {
       subOpcoes: [
         {
           nome: 'Pessoas',
-          rota: '/menuprincipal/pessoas'
+          rota: '/pessoas'
         },
       ]
     },
@@ -36,7 +36,7 @@ export class MenuPrincipalComponent implements OnInit {
       subOpcoes: [
         {
           nome: 'Produtos',
-          rota: '/menuprincipal/produtos'
+          rota: '/produtos'
         },
       ]
     },
@@ -48,7 +48,7 @@ export class MenuPrincipalComponent implements OnInit {
       subOpcoes: [
         {
           nome: 'Vendas',
-          rota: '/menuprincipal/vendas'
+          rota: '/vendas'
         },
       ]
     },
@@ -80,23 +80,23 @@ export class MenuPrincipalComponent implements OnInit {
       opcao.estaAberta = !opcao.estaAberta
     }
   }
-  mostrarPopUp(opcao: any) {
+  mostrarPopUp(opcao: any): void{
     opcao.mouseEstaEmCima = true
   }
-  esconderPopUp(opcao: any) {
+  esconderPopUp(opcao: any): void{
     opcao.mouseEstaEmCima = false
   }
 
-  irParaTela(nome: string, icone: string, rota: string) {
+  irParaTela(nome: string, icone: string, rota: string): void{
     this.headerService.icone = icone
     this.headerService.titulo = nome
     this.router.navigate([rota])
   }
 
-  irParaMenuPrincipal() {
+  irParaMenuPrincipal(): void {
     this.headerService.icone = "bi bi-house-door"
     this.headerService.titulo = "Menu"
-    this.router.navigate(['/menuprincipal'])
+    this.router.navigate(['/inicio'])
   }
 
 }

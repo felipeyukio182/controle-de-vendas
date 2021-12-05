@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { PessoasComponent } from './pessoas/pessoas/pessoas.component';
 import { ProdutosComponent } from './produtos/produtos/produtos.component';
 import { VendasComponent } from './vendas/vendas/vendas.component';
+import { InicioComponent } from './inicio/inicio.component';
 
 
 
@@ -18,6 +19,7 @@ import { VendasComponent } from './vendas/vendas/vendas.component';
     PessoasComponent,
     ProdutosComponent,
     VendasComponent,
+    InicioComponent,
   ],
   imports: [
     CommonModule,

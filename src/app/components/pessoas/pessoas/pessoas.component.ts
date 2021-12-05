@@ -20,8 +20,8 @@ export class PessoasComponent implements OnInit {
   public telaAtiva: "incluir"|"consultar"|"editar"|"excluir" = "consultar"
   public telaTitulo: string = ""
 
-  public pagina = 1
-  public tamanhoPagina = 10
+  public pagina: number = 1
+  public tamanhoPagina: number = 10
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // Pessoas
@@ -67,7 +67,7 @@ export class PessoasComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // Navegar nas Telas
 
-  irParaIncluirPessoa() {
+  irParaIncluirPessoa(): void {
     this.telaAtiva = "incluir"
     this.telaTitulo = "Incluir nova pessoa"
 
@@ -75,7 +75,7 @@ export class PessoasComponent implements OnInit {
     this.filtroService.resetarFiltro(this.pessoaFiltro)
   }
 
-  irParaEditarPessoa(pessoa: any) {
+  irParaEditarPessoa(pessoa: any): void {
     this.telaAtiva = "editar"
     this.telaTitulo = "Editar pessoa"
     this.pessoaSelecionada = pessoa
@@ -93,7 +93,7 @@ export class PessoasComponent implements OnInit {
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.pessoaFiltro)
   }
-  irParaExcluirPessoa(pessoa: any) {
+  irParaExcluirPessoa(pessoa: any): void {
     this.telaAtiva = "excluir"
     this.telaTitulo = "Excluir pessoa"
     this.pessoaSelecionada = pessoa
@@ -113,7 +113,7 @@ export class PessoasComponent implements OnInit {
     this.filtroService.resetarFiltro(this.pessoaFiltro)
   }
 
-  cancelar() {
+  cancelar(): void {
     this.telaAtiva = "consultar"
     this.telaTitulo = ""
 
@@ -127,7 +127,7 @@ export class PessoasComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // Requisições
 
-  buscarPessoas() {
+  buscarPessoas(): void {
     this.carregandoService.carregando = true
     this.requisicaoService.get('pessoas').subscribe({
       next: (retorno: any) => {
@@ -143,7 +143,7 @@ export class PessoasComponent implements OnInit {
     })
   }
   
-  incluirPessoa() {
+  incluirPessoa(): void {
     this.carregandoService.carregando = true
     this.requisicaoService.post('pessoas', this.pessoaForm.value).subscribe({
       next: (retorno: any) => {
@@ -162,7 +162,7 @@ export class PessoasComponent implements OnInit {
     })
   }
 
-  editarPessoa() {
+  editarPessoa(): void {
     this.carregandoService.carregando = true
     this.requisicaoService.put('pessoas', this.pessoaForm.value, {id: this.pessoaSelecionada.id}).subscribe({
       next: (retorno: any) => {
@@ -182,7 +182,7 @@ export class PessoasComponent implements OnInit {
     
   }
 
-  excluirPessoa() {
+  excluirPessoa(): void {
     this.carregandoService.carregando = true
     this.requisicaoService.delete('pessoas', {id: this.pessoaSelecionada.id}).subscribe({
       next: (retorno: any) => {
@@ -202,7 +202,7 @@ export class PessoasComponent implements OnInit {
     })
   }
 
-  filtrar() {
+  filtrar(): void {
     this.pessoasFiltrada = this.filtroService.filtrar(this.pessoaFiltro, this.pessoas, ["nome", "cnpjCpf", "cidade", "estado"])
   }
 

@@ -1,0 +1,28 @@
+<div class="tela-cheia">
+    
+    <app-carregando></app-carregando>
+
+    <div class="conteudo">
+
+        <h1>Bem vindo ao Controle de Vendas "{{ nomeUsuario }}"!</h1>
+        <div class="p-3 acesso-rapido">
+            <h2>Acesso rapido</h2>
+            <div class="d-flex">
+                <button class="btn btn-primary btn-acesso-rapido me-3" (click)="irParaTela('pessoas')">
+                    <i class="bi bi-people"></i>
+                    <span>Pessoas</span>
+                </button>
+                <button class="btn btn-success btn-acesso-rapido me-3" (click)="irParaTela('produtos')">
+                    <i class="bi bi bi-bag"></i>
+                    <span>Produtos</span>
+                </button>
+                <button class="btn btn-warning btn-acesso-rapido me-3" (click)="irParaTela('vendas')">
+                    <i class="bi bi bi-cart"></i>
+                    <span>Vendas</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>

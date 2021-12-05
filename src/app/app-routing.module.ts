@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { InicioComponent } from './components/inicio/inicio.component';
 import { LoginComponent } from './components/login/login.component';
 import { MenuPrincipalComponent } from './components/menu-principal/menu-principal.component';
 import { PessoasComponent } from './components/pessoas/pessoas/pessoas.component';
@@ -9,14 +10,20 @@ import { AuthGuard } from './guard/auth.guard';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'login',
     component: LoginComponent,
   },
   {
-    path: 'menuprincipal',
+    path: '',
     component: MenuPrincipalComponent,
     canActivate: [AuthGuard],
     children: [
+      {
+        path: 'inicio',
+        component: InicioComponent,
+        canActivate: [AuthGuard],
+        children: []
+      },
       {
         path: 'pessoas',
         component: PessoasComponent,
@@ -39,7 +46,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/menuprincipal',
+    redirectTo: '/inicio',
   }
 ];
 

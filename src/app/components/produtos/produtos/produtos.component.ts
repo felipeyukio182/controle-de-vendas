@@ -20,8 +20,8 @@ export class ProdutosComponent implements OnInit {
   public telaAtiva: "incluir"|"consultar"|"editar"|"excluir" = "consultar"
   public telaTitulo: string = ""
 
-  public pagina = 1
-  public tamanhoPagina = 10
+  public pagina: number = 1
+  public tamanhoPagina: number = 10
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // Produtos
@@ -60,7 +60,7 @@ export class ProdutosComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // Navegar nas Telas
 
-  irParaIncluirProduto() {
+  irParaIncluirProduto(): void {
     this.telaAtiva = "incluir"
     this.telaTitulo = "Incluir novo produto"
 
@@ -68,7 +68,7 @@ export class ProdutosComponent implements OnInit {
     this.filtroService.resetarFiltro(this.produtoFiltro)
   }
 
-  irParaEditarProduto(produto: any) {
+  irParaEditarProduto(produto: any): void {
     this.telaAtiva = "editar"
     this.telaTitulo = "Editar produto"
     this.produtoSelecionado = produto
@@ -81,7 +81,7 @@ export class ProdutosComponent implements OnInit {
     this.filtroService.resetarFiltro(this.produtoFiltro)
   }
 
-  irParaExcluirProduto(produto: any) {
+  irParaExcluirProduto(produto: any): void {
     this.telaAtiva = "excluir"
     this.telaTitulo = "Excluir produto"
     this.produtoSelecionado = produto
@@ -95,7 +95,7 @@ export class ProdutosComponent implements OnInit {
     this.filtroService.resetarFiltro(this.produtoFiltro)
   }
 
-  cancelar() {
+  cancelar(): void {
     this.telaAtiva = "consultar"
     this.telaTitulo = ""
 
@@ -109,7 +109,7 @@ export class ProdutosComponent implements OnInit {
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // Requisições
 
-  buscarProdutos() {
+  buscarProdutos(): void {
     this.carregandoService.carregando = true
     this.requisicaoService.get('produtos').subscribe({
       next: (retorno: any) => {
@@ -125,7 +125,7 @@ export class ProdutosComponent implements OnInit {
     })
   }
   
-  incluirProduto() {
+  incluirProduto(): void {
     this.carregandoService.carregando = true
     this.requisicaoService.post('produtos', this.produtoForm.value).subscribe({
       next: (retorno: any) => {
@@ -144,7 +144,7 @@ export class ProdutosComponent implements OnInit {
     })
   }
 
-  editarProduto() {
+  editarProduto(): void {
     this.carregandoService.carregando = true
     this.requisicaoService.put('produtos', this.produtoForm.value, {id: this.produtoSelecionado.id}).subscribe({
       next: (retorno: any) => {
@@ -164,7 +164,7 @@ export class ProdutosComponent implements OnInit {
     
   }
 
-  excluirProduto() {
+  excluirProduto(): void {
     this.carregandoService.carregando = true
     this.requisicaoService.delete('produtos', {id: this.produtoSelecionado.id}).subscribe({
       next: (retorno: any) => {
@@ -187,7 +187,7 @@ export class ProdutosComponent implements OnInit {
 
 
 
-  filtrar() {
+  filtrar(): void {
     this.produtosFiltrado = this.filtroService.filtrar(this.produtoFiltro, this.produtos, ["nome", "preco"])
   }
 
