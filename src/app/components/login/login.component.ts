@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     let estaLogado = this.sessaoService.validarSessao()
     if(estaLogado) {
-      this.router.navigate(["/home"])
+      this.router.navigate(["/menuprincipal"])
     }
   }
 
@@ -42,7 +42,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.carregandoService.carregando = true
-    this.http.post(this.baseUrl + "/users", body).subscribe(
+    this.http.post(this.baseUrl + "/usuarios", body).subscribe(
     (retorno: any) => {
         this.carregandoService.carregando = false
 
@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
           console.log(retorno)
           this.sessaoService.salvarSessao("usuario", JSON.stringify(retorno.usuario))
           this.loginForm.controls["id"].setValue(retorno.usuario.id)
-          this.router.navigate(["/menu-principal"])
+          this.router.navigate(["/menuprincipal"])
 
         } else if(retorno.status == "erro") {
           console.log("Usuario ou senha incorretos...")

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HeaderService } from 'src/app/services/header.service';
+import { RequisicaoService } from 'src/app/services/requisicao.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { CarregandoService } from 'src/app/services/carregando.service';
 
 @Component({
   selector: 'app-pessoas',
@@ -9,36 +12,174 @@ import { UtilsService } from 'src/app/services/utils.service';
 })
 export class PessoasComponent implements OnInit {
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Navegar nas Telas
+
   public telaAtiva: "incluir"|"consultar"|"editar"|"excluir" = "consultar"
   public telaTitulo: string = ""
 
   public pagina = 1
   public tamanhoPagina = 10
-  public list = [1,2,3,4,5,6,7,8,9,0,123,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Pessoas
+
+  public pessoas: Array<any> = []
+
+  public pessoaSelecionada: any = null
+
+  public pessoaForm: FormGroup = new FormGroup({
+    nome:        new FormControl("", Validators.required),
+    cnpjCpf:     new FormControl("", Validators.required),
+    ie:          new FormControl(""),
+    logradouro:  new FormControl("", Validators.required),
+    numero:      new FormControl("", Validators.required),
+    bairro:      new FormControl("", Validators.required),
+    cidade:      new FormControl("", Validators.required),
+    estado:      new FormControl("", Validators.required),
+  })
 
   constructor(
     public headerService: HeaderService,
-    public utilsService: UtilsService
+    public utilsService: UtilsService,
+    private requisicaoService: RequisicaoService,
+    public carregandoService: CarregandoService
   ) {
     this.headerService.icone = "bi bi-people"
     this.headerService.titulo = "Pessoas"
   }
 
   ngOnInit(): void {
+    this.buscarPessoas()
   }
 
-  mudarDePagina(e: any) {
-    this.pagina = e
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Navegar nas Telas
+
+  irParaIncluirPessoa() {
+    this.telaAtiva = "incluir"
+    this.telaTitulo = "Incluir nova pessoa"
+    
+  }
+  irParaEditarPessoa(pessoa: any) {
+    this.telaAtiva = "editar"
+    this.telaTitulo = "Editar pessoa"
+    this.pessoaSelecionada = pessoa
+    this.pessoaForm.setValue({
+      nome:       this.pessoaSelecionada.nome,
+      cnpjCpf:    this.pessoaSelecionada.cnpjCpf,
+      ie:         this.pessoaSelecionada.ie,
+      logradouro: this.pessoaSelecionada.logradouro,
+      numero:     this.pessoaSelecionada.numero,
+      bairro:     this.pessoaSelecionada.bairro,
+      cidade:     this.pessoaSelecionada.cidade,
+      estado:     this.pessoaSelecionada.estado,
+    })
+
+  }
+  irParaExcluirPessoa(pessoa: any) {
+    this.telaAtiva = "excluir"
+    this.telaTitulo = "Excluir pessoa"
+    this.pessoaSelecionada = pessoa
+    this.pessoaForm.setValue({
+      nome:       this.pessoaSelecionada.nome,
+      cnpjCpf:    this.pessoaSelecionada.cnpjCpf,
+      ie:         this.pessoaSelecionada.ie,
+      logradouro: this.pessoaSelecionada.logradouro,
+      numero:     this.pessoaSelecionada.numero,
+      bairro:     this.pessoaSelecionada.bairro,
+      cidade:     this.pessoaSelecionada.cidade,
+      estado:     this.pessoaSelecionada.estado,
+    })
+
+    this.pessoaForm.disable()
+
   }
 
+  cancelar() {
+    this.telaAtiva = "consultar"
+    this.telaTitulo = ""
+
+    this.pessoaForm.reset()
+    this.pessoaForm.enable()
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Requisições
+
+  buscarPessoas() {
+    this.carregandoService.carregando = true
+    this.requisicaoService.get('pessoas').subscribe({
+      next: (retorno: any) => {
+        this.carregandoService.carregando = false
+        this.pessoas = retorno
+        console.log(retorno)
+      },
+      error: (err: any) => {
+        this.carregandoService.carregando = false
+        console.log(err)
+      }
+    })
+  }
+  
   incluirPessoa() {
-    console.log("novaPessoa")
+    this.carregandoService.carregando = true
+    this.requisicaoService.post('pessoas', this.pessoaForm.value).subscribe({
+      next: (retorno: any) => {
+        this.carregandoService.carregando = false
+        this.pessoaForm.reset()
+        console.log(retorno)
+        this.telaAtiva = "consultar"
+      },
+      error: (err: any) => {
+        console.log(err)
+        this.carregandoService.carregando = false
+      },
+      complete: () => {
+        this.buscarPessoas()
+      }
+    })
   }
-  editarPessoa(pessoa: any) {
-    console.log("editarPessoa")
+
+  editarPessoa() {
+    this.carregandoService.carregando = true
+    this.requisicaoService.put('pessoas', this.pessoaForm.value, {id: this.pessoaSelecionada.id}).subscribe({
+      next: (retorno: any) => {
+        this.carregandoService.carregando = false
+        this.pessoaForm.reset()
+        console.log(retorno)
+        this.telaAtiva = "consultar"
+      },
+      error: (err: any) => {
+        this.carregandoService.carregando = false
+        console.log(err)
+      },
+      complete: () => {
+        this.buscarPessoas()
+      }
+    })
+    
   }
-  excluirPessoa(pessoa: any) {
-    console.log("excluirPessoa")
+
+  excluirPessoa() {
+    this.carregandoService.carregando = true
+    this.requisicaoService.delete('pessoas', {id: this.pessoaSelecionada.id}).subscribe({
+      next: (retorno: any) => {
+        this.carregandoService.carregando = false
+        this.pessoaForm.reset()
+        this.pessoaForm.enable()
+        console.log(retorno)
+        this.telaAtiva = "consultar"
+      },
+      error: (err: any) => {
+        this.carregandoService.carregando = false
+        console.log(err)
+      },
+      complete: () => {
+        this.buscarPessoas()
+      }
+    })
+
   }
 
 

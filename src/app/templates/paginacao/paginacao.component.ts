@@ -9,7 +9,7 @@ export class PaginacaoComponent implements OnInit {
 
   @Input() pagina: any = 1
   @Input() itensPorPagina: any = 10
-  @Input() tamanhoLista: any = 10
+  @Input() tamanhoLista: any = 100
 
   @Output() paginaChange = new EventEmitter<number>()
 

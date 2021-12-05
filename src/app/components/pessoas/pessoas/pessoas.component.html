@@ -1,57 +1,109 @@
+
 <div class="tela-cheia">
     
-    <div *ngIf="telaAtiva == 'consultar'" class="conteudo">
-        <div class="d-flex justify-content-between align-items-center">
-            <button class="btn btn-sm btn-primary" title="Nova pessoa" (click)="incluirPessoa()">+ Nova Pessoa</button>
+    <app-carregando></app-carregando>
+    
+    <div *ngIf="!carregandoService.carregando">
+        <div *ngIf="telaAtiva == 'consultar'" class="conteudo">
+            <div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-sm btn-primary" title="Nova pessoa" (click)="irParaIncluirPessoa()">+ Nova Pessoa</button>
+                <div>
+                    <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="pessoas.length"></app-paginacao>
+                </div>
+            </div>
             <div>
-                <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="list.length"></app-paginacao>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 30%;" >
+                                Razão Social
+                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
+                            </th>
+                            <th style="width: 30%;" >
+                                CNPJ/CPF
+                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
+                            </th>
+                            <th style="width: 15%;">
+                                Cidade
+                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
+                            </th>
+                            <th style="width: 10%;">
+                                UF
+                                <select class="form-select form-select-sm" name="" id="">
+                                    <option value="">Todos</option>
+                                    <option *ngFor="let estado of utilsService.estados" [value]="estado">{{ estado }}</option>
+                                </select>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let pessoa of pessoas.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
+                            <td class="d-flex align-items-center justify-content-center">
+                                <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (click)="irParaEditarPessoa(pessoa)"></app-botao-mini>
+                                <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirPessoa(pessoa)"></app-botao-mini>
+                            </td>
+                            <td>{{ pessoa.nome }}</td>
+                            <td>{{ pessoa.cnpjCpf }}</td>
+                            <td>{{ pessoa.cidade }}</td>
+                            <td>{{ pessoa.estado }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div>
-            <table class="table table-sm table-bordered">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;">#</th>
-                        <th style="width: 30%;" >
-                            Razão Social
-                            <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
-                        </th>
-                        <th style="width: 30%;" >
-                            CNPJ/CPF
-                            <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
-                        </th>
-                        <th style="width: 15%;">
-                            Cidade
-                            <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
-                        </th>
-                        <th style="width: 10%;">
-                            UF
-                            <select class="form-select form-select-sm" name="" id="">
-                                <option value="">Todos</option>
-                                <option *ngFor="let estado of utilsService.estados" [value]="estado">{{ estado }}</option>
-                            </select>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let l of list.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
-                        <td class="d-flex align-items-center justify-content-center">
-                            <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (click)="editarPessoa(l)"></app-botao-mini>
-                            <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="excluirPessoa(l)"></app-botao-mini>
-                        </td>
-                        <td>{{ l }}</td>
-                        <td>BLABLA</td>
-                        <td>BLABLA</td>
-                        <td>BLABLA</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div *ngIf="telaAtiva != 'consultar'" class="conteudo">
+            <form [formGroup]="pessoaForm">
+                <h1 class="titulo">{{ telaTitulo }}</h1>
+                <h2 class="sub-titulo">Dados Principais</h2>
+                <div class="d-flex col-sm-12">
+                    <div class="d-flex flex-column col-sm-6 pe-1">
+                        <label for="">Razão Social/Nome</label>
+                        <input formControlName="nome" class="form-control form-control-sm" type="text">
+                    </div>
+                    <div class="d-flex flex-column col-sm-3 px-1">
+                        <label for="">CNPJ/CPF</label>
+                        <input formControlName="cnpjCpf" class="form-control form-control-sm" type="text">
+                    </div>
+                    <div class="d-flex flex-column col-sm-3 ps-1">
+                        <label for="">IE</label>
+                        <input formControlName="ie" class="form-control form-control-sm" type="text">
+                    </div>
+                </div>
+                <h2 class="sub-titulo mt-2">Endereço</h2>
+                <div class="d-flex col-sm-12">
+                    <div class="d-flex flex-column col-sm-9 pe-1">
+                        <label for="">Logradouro</label>
+                        <input formControlName="logradouro" class="form-control form-control-sm" type="text">
+                    </div>
+                    <div class="d-flex flex-column col-sm-3 ps-1">
+                        <label for="">Numero</label>
+                        <input formControlName="numero" class="form-control form-control-sm" type="text">
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div class="d-flex flex-column col-sm-6 pe-1">
+                        <label for="">Bairro</label>
+                        <input formControlName="bairro" class="form-control form-control-sm" type="text">
+                    </div>
+                    <div class="d-flex flex-column col-sm-4 px-1">
+                        <label for="">Cidade</label>
+                        <input formControlName="cidade" class="form-control form-control-sm" type="text">
+                    </div>
+                    <div class="d-flex flex-column col-sm-2 ps-1">
+                        <label for="">Estado</label>
+                        <select formControlName="estado" name="" id="" class="form-select form-select-sm" >
+                            <option value=""></option>
+                            <option *ngFor="let estado of utilsService.estados" [value]="estado">{{ estado }}</option>
+                        </select>
+                    </div>
+                </div>
+                <button *ngIf="telaAtiva == 'incluir'" class="btn btn-primary mt-2 me-1" (click)="incluirPessoa()">Salvar</button>
+                <button *ngIf="telaAtiva == 'editar'" class="btn btn-primary mt-2 me-1" (click)="editarPessoa()">Salvar</button>
+                <button *ngIf="telaAtiva == 'excluir'" class="btn btn-danger mt-2 me-1" (click)="excluirPessoa()">Excluir</button>
+                <button class="btn btn-outline-secondary mt-2" (click)="cancelar()">Cancelar</button>
+            </form>
         </div>
-    </div>
-
-    <div *ngIf="telaAtiva != 'consultar'" class="conteudo">
-        <h1>{{ telaTitulo }}</h1>
-
     </div>
 
 </div>

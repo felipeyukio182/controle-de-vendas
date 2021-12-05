@@ -23,3 +23,10 @@ body {
     width: 24px;
     font-size: 12px;
 }
+
+.titulo {
+    font-size: 24px;
+}
+.sub-titulo {
+    font-size: 16px;
+}
