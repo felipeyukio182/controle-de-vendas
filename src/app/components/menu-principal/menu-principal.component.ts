@@ -35,16 +35,8 @@ export class MenuPrincipalComponent implements OnInit {
       mouseEstaEmCima: false,
       subOpcoes: [
         {
-          nome: 'teste12',
-          rota: ''
-        },
-        {
-          nome: 'teste22',
-          rota: ''
-        },
-        {
-          nome: 'teste32',
-          rota: ''
+          nome: 'Produtos',
+          rota: '/menuprincipal/produtos'
         },
       ]
     },
@@ -55,12 +47,8 @@ export class MenuPrincipalComponent implements OnInit {
       mouseEstaEmCima: false,
       subOpcoes: [
         {
-          nome: 'teste133',
-          rota: ''
-        },
-        {
-          nome: 'teste233',
-          rota: ''
+          nome: 'Vendas',
+          rota: '/menuprincipal/vendas'
         },
       ]
     },

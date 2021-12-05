@@ -1,0 +1,64 @@
+
+<div class="tela-cheia">
+    
+    <app-carregando></app-carregando>
+    
+    <div *ngIf="!carregandoService.carregando">
+        <div *ngIf="telaAtiva == 'consultar'" class="conteudo">
+            <div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-sm btn-primary" title="Novo Produto" (click)="irParaIncluirProduto()">+ Novo Produto</button>
+                <div>
+                    <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="produtos.length"></app-paginacao>
+                </div>
+            </div>
+            <div>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 30%;" >
+                                <app-label-ordenacao label="Descrição/Nome" nome="nome" atrib="nome" [arr]="produtosFiltrado"></app-label-ordenacao>
+                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="produtoFiltro.nome" (ngModelChange)="filtrar()">
+                            </th>
+                            <th style="width: 30%;" >
+                                <app-label-ordenacao label="Preço" nome="preco" atrib="preco" [arr]="produtosFiltrado"></app-label-ordenacao>
+                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="produtoFiltro.preco" (ngModelChange)="filtrar()">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let produto of produtosFiltrado.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
+                            <td class="d-flex align-items-center justify-content-center">
+                                <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (click)="irParaEditarProduto(produto)"></app-botao-mini>
+                                <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirProduto(produto)"></app-botao-mini>
+                            </td>
+                            <td>{{ produto.nome }}</td>
+                            <td>{{ produto.preco }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div *ngIf="telaAtiva != 'consultar'" class="conteudo">
+            <form [formGroup]="produtoForm">
+                <h1 class="titulo">{{ telaTitulo }}</h1>
+                <div class="d-flex col-sm-12">
+                    <div class="d-flex flex-column col-sm-6 pe-1">
+                        <label for="">Descrição</label>
+                        <input formControlName="nome" class="form-control form-control-sm" type="text">
+                    </div>
+                    <div class="d-flex flex-column col-sm-3 px-1">
+                        <label for="">Preço</label>
+                        <input formControlName="preco" class="form-control form-control-sm" type="text">
+                    </div>
+                </div>
+
+                <button *ngIf="telaAtiva == 'incluir'" class="btn btn-primary mt-2 me-1" (click)="incluirProduto()">Salvar</button>
+                <button *ngIf="telaAtiva == 'editar'" class="btn btn-primary mt-2 me-1" (click)="editarProduto()">Salvar</button>
+                <button *ngIf="telaAtiva == 'excluir'" class="btn btn-danger mt-2 me-1" (click)="excluirProduto()">Excluir</button>
+                <button class="btn btn-outline-secondary mt-2" (click)="cancelar()">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+</div>

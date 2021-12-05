@@ -52,6 +52,9 @@
     height: 80px;
     overflow: hidden;
 }
+.logo-div > a {
+    cursor: pointer;
+}
 .logo-div .logo-titulo {
     height: 30px;
     font-size: 18px;

@@ -38,15 +38,13 @@ export class FiltroService {
     return arrayFiltrado
   }
 
-  resetarFiltro(filtro: string|any): string|any {
+  resetarFiltro(filtro: string|any): void {
     if(typeof(filtro) == 'string') {
       filtro = ""
-    } else {
-      for(let a of filtro) {
-        a = ""
+    } else if(typeof(filtro) == 'object'){
+      for(let a in filtro) {
+        filtro[a] = ""
       }
     }
-
-    return filtro
   }
 }
