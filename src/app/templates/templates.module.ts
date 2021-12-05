@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CarregandoComponent } from './carregando/carregando.component';
 import { PaginacaoComponent } from './paginacao/paginacao.component';
 import { BotaoMiniComponent } from './botao-mini/botao-mini.component';
+import { LabelOrdenacaoComponent } from './label-ordenacao/label-ordenacao.component';
 
 
 
@@ -10,7 +11,8 @@ import { BotaoMiniComponent } from './botao-mini/botao-mini.component';
   declarations: [
     CarregandoComponent,
     PaginacaoComponent,
-    BotaoMiniComponent
+    BotaoMiniComponent,
+    LabelOrdenacaoComponent
   ],
   imports: [
     CommonModule,
@@ -18,7 +20,8 @@ import { BotaoMiniComponent } from './botao-mini/botao-mini.component';
   exports: [
     CarregandoComponent,
     PaginacaoComponent,
-    BotaoMiniComponent
+    BotaoMiniComponent,
+    LabelOrdenacaoComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

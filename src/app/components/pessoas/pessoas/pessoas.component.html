@@ -17,20 +17,20 @@
                         <tr>
                             <th style="width: 5%;">#</th>
                             <th style="width: 30%;" >
-                                Razão Social
-                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
+                                <app-label-ordenacao label="Razão Social/Nome" nome="nome" atrib="nome" [arr]="pessoasFiltrada"></app-label-ordenacao>
+                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="pessoaFiltro.nome" (ngModelChange)="filtrar()">
                             </th>
                             <th style="width: 30%;" >
-                                CNPJ/CPF
-                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
+                                <app-label-ordenacao label="CNPJ/CPF" nome="cnpjCpf" atrib="cnpjCpf" [arr]="pessoasFiltrada"></app-label-ordenacao>
+                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="pessoaFiltro.cnpjCpf" (ngModelChange)="filtrar()">
                             </th>
                             <th style="width: 15%;">
-                                Cidade
-                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text">
+                                <app-label-ordenacao label="Cidade" nome="cidade" atrib="cidade" [arr]="pessoasFiltrada"></app-label-ordenacao>
+                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="pessoaFiltro.cidade" (ngModelChange)="filtrar()">
                             </th>
                             <th style="width: 10%;">
-                                UF
-                                <select class="form-select form-select-sm" name="" id="">
+                                <app-label-ordenacao label="Estado" nome="estado" atrib="estado" [arr]="pessoasFiltrada"></app-label-ordenacao>
+                                <select class="form-select form-select-sm" name="" id="" [(ngModel)]="pessoaFiltro.estado" (ngModelChange)="filtrar()">
                                     <option value="">Todos</option>
                                     <option *ngFor="let estado of utilsService.estados" [value]="estado">{{ estado }}</option>
                                 </select>
@@ -38,7 +38,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let pessoa of pessoas.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
+                        <tr *ngFor="let pessoa of pessoasFiltrada.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
                             <td class="d-flex align-items-center justify-content-center">
                                 <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (click)="irParaEditarPessoa(pessoa)"></app-botao-mini>
                                 <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirPessoa(pessoa)"></app-botao-mini>

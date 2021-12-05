@@ -37,46 +37,15 @@ export class UtilsService {
 
   constructor() { }
 
-  validateInputValue(id: string): boolean {
-    // debugger
-    if(id == 'id') {
-      return true
+  formatarDataComBarraParaYYYYMMDDComTraco(dataComBarra: string): string {
+    let regexDataComBarra = /(\d{2})\/(\d{2})\/(\d{4}).*/
+    let dataFormatada = ""
+
+    if(regexDataComBarra.test(dataComBarra)) {
+      dataFormatada = dataComBarra.replace(regexDataComBarra, "$3-$2-$1")
     }
-    
-    let input: HTMLInputElement|HTMLSelectElement = <HTMLInputElement|HTMLSelectElement>document.getElementById(id)
-    
-    if((input.required) && (!input.value || input.value.length < 1)) {
-      input.focus()
-      return false
-    }
-    return true
+
+    return dataFormatada
   }
-
-  validateElementValue(element: any) {
-    if((element.required) && (!element.value || element.value.length < 1)) {
-      element.focus()
-      return false
-    }
-    return true
-  }
-
-  formatDate_YYYYMMDD_To_DDMMYYYY(date: string): string {
-    let formattedDate = ""
-    let regexYYYYMMDD = (/^(\d{4})-(\d{2})-(\d{2})(.*)/)
-    if(regexYYYYMMDD.test(date)) {
-      formattedDate = date.replace(regexYYYYMMDD, "$3/$2/$1")
-    }
-
-    return formattedDate
-  }
-
-  formatNumberToPrice(price: string|number): string {
-    let formattedPrice = ""
-    if(typeof(price) == 'string') {
-      price = Number.parseFloat(price.replace(",", "."))
-    }
-    formattedPrice = price.toFixed(2).replace(".", ",")
-    return formattedPrice
-  }
-
+  
 }

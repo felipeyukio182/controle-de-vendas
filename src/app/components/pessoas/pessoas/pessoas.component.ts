@@ -4,6 +4,8 @@ import { HeaderService } from 'src/app/services/header.service';
 import { RequisicaoService } from 'src/app/services/requisicao.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { CarregandoService } from 'src/app/services/carregando.service';
+import { FiltroService } from 'src/app/services/filtro.service';
+import { OrdenacaoService } from 'src/app/services/ordenacao.service';
 
 @Component({
   selector: 'app-pessoas',
@@ -25,8 +27,15 @@ export class PessoasComponent implements OnInit {
   // Pessoas
 
   public pessoas: Array<any> = []
+  public pessoasFiltrada: Array<any> = []
 
   public pessoaSelecionada: any = null
+  public pessoaFiltro: any = {
+    nome: "",
+    cnpjCpf: "",
+    cidade: "",
+    estado: ""
+  }
 
   public pessoaForm: FormGroup = new FormGroup({
     nome:        new FormControl("", Validators.required),
@@ -43,7 +52,9 @@ export class PessoasComponent implements OnInit {
     public headerService: HeaderService,
     public utilsService: UtilsService,
     private requisicaoService: RequisicaoService,
-    public carregandoService: CarregandoService
+    public carregandoService: CarregandoService,
+    public filtroService: FiltroService,
+    private ordenacaoService: OrdenacaoService
   ) {
     this.headerService.icone = "bi bi-people"
     this.headerService.titulo = "Pessoas"
@@ -59,8 +70,11 @@ export class PessoasComponent implements OnInit {
   irParaIncluirPessoa() {
     this.telaAtiva = "incluir"
     this.telaTitulo = "Incluir nova pessoa"
-    
+
+    this.ordenacaoService.resetarOrdenacao()
+    this.filtroService.resetarFiltro(this.pessoaFiltro)
   }
+
   irParaEditarPessoa(pessoa: any) {
     this.telaAtiva = "editar"
     this.telaTitulo = "Editar pessoa"
@@ -76,6 +90,8 @@ export class PessoasComponent implements OnInit {
       estado:     this.pessoaSelecionada.estado,
     })
 
+    this.ordenacaoService.resetarOrdenacao()
+    this.filtroService.resetarFiltro(this.pessoaFiltro)
   }
   irParaExcluirPessoa(pessoa: any) {
     this.telaAtiva = "excluir"
@@ -93,7 +109,8 @@ export class PessoasComponent implements OnInit {
     })
 
     this.pessoaForm.disable()
-
+    this.ordenacaoService.resetarOrdenacao()
+    this.filtroService.resetarFiltro(this.pessoaFiltro)
   }
 
   cancelar() {
@@ -102,6 +119,9 @@ export class PessoasComponent implements OnInit {
 
     this.pessoaForm.reset()
     this.pessoaForm.enable()
+
+    this.ordenacaoService.resetarOrdenacao()
+    this.filtroService.resetarFiltro(this.pessoaFiltro)
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,6 +133,7 @@ export class PessoasComponent implements OnInit {
       next: (retorno: any) => {
         this.carregandoService.carregando = false
         this.pessoas = retorno
+        this.pessoasFiltrada = retorno
         console.log(retorno)
       },
       error: (err: any) => {
@@ -179,7 +200,10 @@ export class PessoasComponent implements OnInit {
         this.buscarPessoas()
       }
     })
+  }
 
+  filtrar() {
+    this.pessoasFiltrada = this.filtroService.filtrar(this.pessoaFiltro, this.pessoas, ["nome", "cnpjCpf", "cidade", "estado"])
   }
 
 
