@@ -1,0 +1,9 @@
+.data-label {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.selecionar-produto-borda {
+    border: 1px solid #d7d7d7;
+    border-radius: 10px;
+}

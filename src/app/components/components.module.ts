@@ -10,6 +10,7 @@ import { ProdutosComponent } from './produtos/produtos/produtos.component';
 import { VendasComponent } from './vendas/vendas/vendas.component';
 import { InicioComponent } from './inicio/inicio.component';
 
+import {NgbNavModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -27,6 +28,8 @@ import { InicioComponent } from './inicio/inicio.component';
     ReactiveFormsModule,
     TemplatesModule,
     RouterModule,
+    NgbTypeaheadModule,
+    NgbNavModule
   ]
 })
 export class ComponentsModule { }

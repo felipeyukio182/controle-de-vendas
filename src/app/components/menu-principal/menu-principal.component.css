@@ -150,6 +150,8 @@
     width: 150px;
     padding: 0px;
     border-radius: 0px 5px 5px 0px;
+
+    z-index: 2000;
 }
 .lista-sidenav-sub-opcoes-fechada > li {
     padding-left: 20px;

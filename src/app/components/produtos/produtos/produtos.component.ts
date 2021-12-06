@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CarregandoService } from 'src/app/services/carregando.service';
 import { FiltroService } from 'src/app/services/filtro.service';
 import { HeaderService } from 'src/app/services/header.service';
@@ -47,7 +48,8 @@ export class ProdutosComponent implements OnInit {
     private requisicaoService: RequisicaoService,
     public carregandoService: CarregandoService,
     public filtroService: FiltroService,
-    private ordenacaoService: OrdenacaoService
+    private ordenacaoService: OrdenacaoService,
+    private router: Router
   ) {
     this.headerService.icone = "bi bi bi-bag"
     this.headerService.titulo = "Produtos"
@@ -62,7 +64,8 @@ export class ProdutosComponent implements OnInit {
 
   irParaIncluirProduto(): void {
     this.telaAtiva = "incluir"
-    this.telaTitulo = "Incluir novo produto"
+    this.telaTitulo = "Novo produto"
+    this.pagina = 1
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.produtoFiltro)
@@ -71,6 +74,7 @@ export class ProdutosComponent implements OnInit {
   irParaEditarProduto(produto: any): void {
     this.telaAtiva = "editar"
     this.telaTitulo = "Editar produto"
+    this.pagina = 1
     this.produtoSelecionado = produto
     this.produtoForm.setValue({
       nome:  this.produtoSelecionado.nome,
@@ -84,6 +88,7 @@ export class ProdutosComponent implements OnInit {
   irParaExcluirProduto(produto: any): void {
     this.telaAtiva = "excluir"
     this.telaTitulo = "Excluir produto"
+    this.pagina = 1
     this.produtoSelecionado = produto
     this.produtoForm.setValue({
       nome:  this.produtoSelecionado.nome,
@@ -188,7 +193,12 @@ export class ProdutosComponent implements OnInit {
 
 
   filtrar(): void {
+    this.pagina = 1
     this.produtosFiltrado = this.filtroService.filtrar(this.produtoFiltro, this.produtos, ["nome", "preco"])
+  }
+
+  voltarInicio(): void {
+    this.router.navigate(['/inicio'])
   }
 
 }

@@ -7,6 +7,8 @@ import { AppComponent } from './app.component';
 
 import { ComponentsModule } from './components/components.module';
 import { TemplatesModule } from './templates/templates.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 
 @NgModule({
   declarations: [
@@ -18,6 +20,7 @@ import { TemplatesModule } from './templates/templates.module';
     HttpClientModule,
     ComponentsModule,
     TemplatesModule,
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

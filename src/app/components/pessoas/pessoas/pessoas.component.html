@@ -5,11 +5,9 @@
     
     <div *ngIf="!carregandoService.carregando">
         <div *ngIf="telaAtiva == 'consultar'" class="conteudo">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center height-50px">
                 <button class="btn btn-sm btn-primary" title="Nova pessoa" (click)="irParaIncluirPessoa()">+ Nova Pessoa</button>
-                <div>
-                    <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="pessoas.length"></app-paginacao>
-                </div>
+                <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
             </div>
             <div>
                 <table class="table table-sm table-bordered">
@@ -50,6 +48,9 @@
                         </tr>
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-center align-items-center height-50px">
+                    <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="pessoas.length"></app-paginacao>
+                </div>
             </div>
         </div>
         <div *ngIf="telaAtiva != 'consultar'" class="conteudo">

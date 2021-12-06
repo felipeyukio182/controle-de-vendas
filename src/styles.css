@@ -30,3 +30,11 @@ body {
 .sub-titulo {
     font-size: 16px;
 }
+
+.height-50px {
+    height: 50px;
+}
+
+.min-height-400px {
+    min-height: 400px;
+}

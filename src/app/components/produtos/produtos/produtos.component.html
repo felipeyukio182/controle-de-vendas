@@ -5,23 +5,21 @@
     
     <div *ngIf="!carregandoService.carregando">
         <div *ngIf="telaAtiva == 'consultar'" class="conteudo">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center height-50px">
                 <button class="btn btn-sm btn-primary" title="Novo Produto" (click)="irParaIncluirProduto()">+ Novo Produto</button>
-                <div>
-                    <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="produtos.length"></app-paginacao>
-                </div>
+                <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
             </div>
             <div>
                 <table class="table table-sm table-bordered">
                     <thead>
                         <tr>
                             <th style="width: 5%;">#</th>
-                            <th style="width: 30%;" >
+                            <th style="width: 55%;" >
                                 <app-label-ordenacao label="Descrição/Nome" nome="nome" atrib="nome" [arr]="produtosFiltrado"></app-label-ordenacao>
                                 <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="produtoFiltro.nome" (ngModelChange)="filtrar()">
                             </th>
-                            <th style="width: 30%;" >
-                                <app-label-ordenacao label="Preço" nome="preco" atrib="preco" [arr]="produtosFiltrado"></app-label-ordenacao>
+                            <th style="width: 40%;" >
+                                <app-label-ordenacao label="Preço(R$)" nome="preco" atrib="preco" [arr]="produtosFiltrado"></app-label-ordenacao>
                                 <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="produtoFiltro.preco" (ngModelChange)="filtrar()">
                             </th>
                         </tr>
@@ -33,22 +31,25 @@
                                 <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirProduto(produto)"></app-botao-mini>
                             </td>
                             <td>{{ produto.nome }}</td>
-                            <td>{{ produto.preco }}</td>
+                            <td>{{ produto.preco | currency: 'BRL' }}</td>
                         </tr>
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-center align-items-center height-50px">
+                    <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="produtos.length"></app-paginacao>
+                </div>
             </div>
         </div>
         <div *ngIf="telaAtiva != 'consultar'" class="conteudo">
             <form [formGroup]="produtoForm">
                 <h1 class="titulo">{{ telaTitulo }}</h1>
                 <div class="d-flex col-sm-12">
-                    <div class="d-flex flex-column col-sm-6 pe-1">
+                    <div class="d-flex flex-column col-sm-8 pe-1">
                         <label for="">Descrição</label>
                         <input formControlName="nome" class="form-control form-control-sm" type="text">
                     </div>
-                    <div class="d-flex flex-column col-sm-3 px-1">
-                        <label for="">Preço</label>
+                    <div class="d-flex flex-column col-sm-4 px-1">
+                        <label for="">Preço(R$)</label>
                         <input formControlName="preco" class="form-control form-control-sm" type="text">
                     </div>
                 </div>

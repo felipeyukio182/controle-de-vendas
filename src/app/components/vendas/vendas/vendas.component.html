@@ -1,1 +1,215 @@
-<p>vendas works!</p>
+
+<div class="tela-cheia">
+    
+    <app-carregando></app-carregando>
+    
+    <div *ngIf="!carregandoService.carregando">
+        <div *ngIf="telaAtiva == 'consultar'" class="conteudo">
+            <div class="d-flex justify-content-between align-items-center height-50px">
+                <button class="btn btn-sm btn-primary" title="Novo Produto" (click)="irParaIncluirVenda()">+ Nova Venda</button>
+
+                <div class="d-flex flex-column align-items-center justify-content-center">
+                    <span>Vendas do periodo:</span>
+                    <span><strong>{{ dataInicialPesquisada | date: 'dd/MM/yyyy' }} - {{ dataFinalPesquisada | date: 'dd/MM/yyyy' }}</strong></span>
+                </div>
+
+                <div class="d-flex">
+                    <div class="d-flex align-items-center justify-content-center px-3">
+                        <label class="data-label px-2" for="dataInicial">Data Inicial:</label>
+                        <input class="form-control form-control-sm" type="date" id="dataInicial" [(ngModel)]="dataInicial">
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-center px-3">
+                        <label class="data-label px-2" for="dataFinal">Data Final:</label>
+                        <input class="form-control form-control-sm" type="date" id="dataFinal" [(ngModel)]="dataFinal">
+                    </div>
+
+                    <button class="btn btn-sm btn-success" (click)="pesquisarVendasNoPeriodo()">Pesquisar</button>
+
+                </div>
+                <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
+            </div>
+            <div>
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 40%;" >
+                                <app-label-ordenacao label="Cliente" nome="cliente" atrib="cliente" [arr]="vendasFiltrado"></app-label-ordenacao>
+                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="vendaFiltro.cliente" (ngModelChange)="filtrar()">
+                            </th>
+                            <th style="width: 40%;" >
+                                <app-label-ordenacao label="Data" nome="data" atrib="data" [arr]="vendasFiltrado"></app-label-ordenacao>
+                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="vendaFiltro.data" (ngModelChange)="filtrar()">
+                            </th>
+                            <th style="width: 15%;" >
+                                <app-label-ordenacao label="Total" nome="total" atrib="total" [arr]="vendasFiltrado"></app-label-ordenacao>
+                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="vendaFiltro.total" (ngModelChange)="filtrar()">
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let venda of vendasFiltrado.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
+                            <td class="d-flex align-items-center justify-content-center">
+                                <app-botao-mini titulo="Editar venda" icone="bi bi-pencil" estiloCss="btn-warning" (click)="irParaEditarVenda(venda)"></app-botao-mini>
+                                <app-botao-mini titulo="Excluir venda" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirVenda(venda)"></app-botao-mini>
+                            </td>
+                            <td>{{ venda.cliente }}</td>
+                            <td>{{ venda.data | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+                            <td>{{ venda.total | currency: 'BRL' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-center align-items-center height-50px">
+                    <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="vendas.length"></app-paginacao>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="telaAtiva != 'consultar'" class="conteudo">
+            <div>
+                <h1 class="titulo">{{ telaTitulo }}</h1>
+                
+                
+                <ul ngbNav #nav="ngbNav" [(activeId)]="navAtiva" class="nav-tabs">
+                    <li [ngbNavItem]="1">
+                        <a ngbNavLink>Cliente</a>
+                        <ng-template ngbNavContent>
+
+                            <div class="d-flex col-sm-12">
+                                <div class="d-flex flex-column col-sm-12 pe-1">
+                                    <label for="cliente">Cliente</label>
+                                    <input id="cliente" type="text" class="form-control" [ngbTypeahead]="pesquisarCliente"  (selectItem)="selecionarCliente($event)"
+                                           [(ngModel)]="clienteIdNomeCidadeEstado" (ngModelChange)="clienteEstaSelecionado()">
+                                </div>
+                            </div>
+
+
+                            <div *ngIf="clienteSelecionado">
+                                <h2 class="sub-titulo mt-4">Dados Principais</h2>
+                                <div class="d-flex col-sm-12">
+                                    <div class="d-flex flex-column col-sm-6 pe-1">
+                                        <label for="">Razão Social/Nome</label>
+                                        <input [ngModel]="clienteSelecionado?.nome" disabled class="form-control form-control-sm" type="text">
+                                    </div>
+                                    <div class="d-flex flex-column col-sm-3 px-1">
+                                        <label for="">CNPJ/CPF</label>
+                                        <input [ngModel]="clienteSelecionado?.cnpjCpf" disabled class="form-control form-control-sm" type="text">
+                                    </div>
+                                    <div class="d-flex flex-column col-sm-3 ps-1">
+                                        <label for="">IE</label>
+                                        <input [ngModel]="clienteSelecionado?.ie" disabled class="form-control form-control-sm" type="text">
+                                    </div>
+                                </div>
+                                <h2 class="sub-titulo mt-2">Endereço</h2>
+                                <div class="d-flex col-sm-12">
+                                    <div class="d-flex flex-column col-sm-9 pe-1">
+                                        <label for="">Logradouro</label>
+                                        <input [ngModel]="clienteSelecionado?.logradouro" disabled class="form-control form-control-sm" type="text">
+                                    </div>
+                                    <div class="d-flex flex-column col-sm-3 ps-1">
+                                        <label for="">Numero</label>
+                                        <input [ngModel]="clienteSelecionado?.numero" disabled class="form-control form-control-sm" type="text">
+                                    </div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="d-flex flex-column col-sm-6 pe-1">
+                                        <label for="">Bairro</label>
+                                        <input [ngModel]="clienteSelecionado?.bairro" disabled class="form-control form-control-sm" type="text">
+                                    </div>
+                                    <div class="d-flex flex-column col-sm-4 px-1">
+                                        <label for="">Cidade</label>
+                                        <input [ngModel]="clienteSelecionado?.cidade" disabled class="form-control form-control-sm" type="text">
+                                    </div>
+                                    <div class="d-flex flex-column col-sm-2 ps-1">
+                                        <label for="">Estado</label>
+                                        <select [ngModel]="clienteSelecionado?.estado" disabled class="form-select form-select-sm" >
+                                            <option value=""></option>
+                                            <option *ngFor="let estado of utilsService.estados" [value]="estado">{{ estado }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                        <a ngbNavLink>Produtos</a>
+                        <ng-template ngbNavContent>
+                            
+                            <div class="d-flex col-sm-12">
+                                <div class="d-flex flex-column col-sm-12 pe-1">
+                                    <label for="produto">Produto</label>
+                                    <input id="produto" type="text" class="form-control" [ngbTypeahead]="pesquisarProduto"  (selectItem)="selecionarProduto($event)"
+                                           [(ngModel)]="produtoIdNome" (ngModelChange)="produtoEstaSelecionado()">
+                                </div>
+                            </div>
+
+                            <div class="p-3 my-2 selecionar-produto-borda">
+                                <div class="d-flex col-sm-12">
+                                    <div class="d-flex flex-column col-sm-8 pe-1">
+                                        <label for="">Descrição</label>
+                                        <input [ngModel]="produtoSelecionado?.nome" class="form-control form-control-sm" disabled type="text">
+                                    </div>
+                                    <div class="d-flex flex-column col-sm-4 px-1">
+                                        <label for="">Preço(R$)</label>
+                                        <input [(ngModel)]="precoProdutoSelecionado" class="form-control form-control-sm" type="text">
+                                    </div>
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary mt-2" (click)="adicionarProduto()">Adicionar</button>
+                                <button *ngIf="estaEditandoProdutoVenda" class="btn btn-sm btn-outline-danger mt-2" (click)="editarProdutoCancelar()">Cancelar</button>
+                            </div>
+
+
+                        </ng-template>
+                    </li>
+                    <li [ngbNavItem]="3">
+                        <a ngbNavLink>Totais</a>
+                        <ng-template ngbNavContent>
+                            
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Id</th>
+                                        <th>Descrição/Nome</th>
+                                        <th>Preço(R$)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let p of listaProdutosAdicionados, index as i">
+                                        <td class="d-flex align-items-center justify-content-center">
+                                            <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (click)="editarProduto(i)"></app-botao-mini>
+                                            <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="excluirProduto(i)"></app-botao-mini> 
+                                        </td>
+                                        <td>{{ p?.id }}</td>
+                                        <td>{{ p?.nome }}</td>
+                                        <td>{{ p?.preco | currency: 'BRL' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-end" colspan="3">Total</td>
+                                        <td>{{ totalVenda | currency: 'BRL' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="d-flex justify-content-center align-items-center height-50px">
+                                <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="listaProdutosAdicionados.length"></app-paginacao>
+                            </div>
+
+                        </ng-template>
+                    </li>
+                </ul>
+                
+                <div [ngbNavOutlet]="nav" class="mt-2 min-height-400px"></div>
+
+
+
+                <button *ngIf="telaAtiva == 'incluir' && navAtiva == 3" class="btn btn-primary mt-2 me-1" (click)="incluirVenda()">Salvar</button>
+                <button *ngIf="telaAtiva == 'editar' && navAtiva == 3" class="btn btn-primary mt-2 me-1" (click)="editarVenda()">Salvar</button>
+                <button *ngIf="telaAtiva == 'excluir'" class="btn btn-danger mt-2 me-1" (click)="excluirVenda()">Excluir</button>
+                <button class="btn btn-outline-secondary mt-2" (click)="cancelar()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+</div>
