@@ -21,7 +21,7 @@ export class PaginacaoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.tamanhoLista)
+    // console.log(this.tamanhoLista)
     this.qtdePaginas = Math.ceil(this.tamanhoLista/this.itensPorPagina)
     for(let i = 0; i < this.qtdePaginas; i++) {
       this.arrayPaginas.push(i)

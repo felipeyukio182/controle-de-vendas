@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { forkJoin, Observable, OperatorFunction } from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
@@ -50,16 +49,6 @@ export class VendasComponent implements OnInit {
     
   }
   
-  // public vendaForm: FormGroup = new FormGroup({
-  //   idCliente:  new FormControl("", Validators.required),
-  //   // clienteIdNomeCidadeEstado:  new FormControl("", Validators.required),
-  //   produtos: new FormGroup({
-  //     idProduto: new FormControl("", Validators.required),
-  //     quantidade: new FormControl("", Validators.required),
-  //     valor: new FormControl("", Validators.required)
-  //   }),
-  // })
-  
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // Cliente e Produtos
 
@@ -73,6 +62,7 @@ export class VendasComponent implements OnInit {
   public produtosFiltrado: Array<any> = []
   public produtoSelecionado: any = null
   public precoProdutoSelecionado: any = null
+  public quantidadeProdutoSelecionado: any = null
 
   public produtoIdNome: string = ""
 
@@ -238,10 +228,11 @@ export class VendasComponent implements OnInit {
   adicionarProduto() {
     if(this.estaEditandoProdutoVenda) {
 
-      this.totalVenda -= this.listaProdutosAdicionados[this.indexProdutoEditado].preco
+      this.totalVenda -= this.listaProdutosAdicionados[this.indexProdutoEditado].quantidade * this.listaProdutosAdicionados[this.indexProdutoEditado].preco
       this.listaProdutosAdicionados[this.indexProdutoEditado] = {
         id: this.produtoSelecionado.id,
         nome: this.produtoSelecionado.nome,
+        quantidade: parseFloat(this.quantidadeProdutoSelecionado),
         preco: parseFloat(this.precoProdutoSelecionado)
       }
       this.estaEditandoProdutoVenda = false
@@ -251,13 +242,15 @@ export class VendasComponent implements OnInit {
       this.listaProdutosAdicionados.push({
         id: this.produtoSelecionado.id,
         nome: this.produtoSelecionado.nome,
+        quantidade: parseFloat(this.quantidadeProdutoSelecionado),
         preco: parseFloat(this.precoProdutoSelecionado)
       })
   
     }
     
-    this.totalVenda += parseFloat(this.precoProdutoSelecionado)
+    this.totalVenda += parseFloat(this.quantidadeProdutoSelecionado) * parseFloat(this.precoProdutoSelecionado)
 
+    this.quantidadeProdutoSelecionado = null
     this.precoProdutoSelecionado = null
     this.produtoIdNome = ""
     this.produtoSelecionado = null
@@ -266,6 +259,7 @@ export class VendasComponent implements OnInit {
     this.indexProdutoEditado = i
     this.estaEditandoProdutoVenda = true
     this.produtoSelecionado = this.listaProdutosAdicionados[i]
+    this.quantidadeProdutoSelecionado = this.listaProdutosAdicionados[i]
     this.precoProdutoSelecionado = this.listaProdutosAdicionados[i].preco
     this.produtoIdNome = this.listaProdutosAdicionados[i].id + ' - ' + this.listaProdutosAdicionados[i].nome
     this.navAtiva = 2
@@ -274,12 +268,13 @@ export class VendasComponent implements OnInit {
     this.estaEditandoProdutoVenda = false
     this.indexProdutoEditado = -1
 
+    this.quantidadeProdutoSelecionado = null
     this.precoProdutoSelecionado = null
     this.produtoIdNome = ""
     this.produtoSelecionado = null
   }
   excluirProduto(i: number) {
-    this.totalVenda -= parseFloat(this.listaProdutosAdicionados[i].preco)
+    this.totalVenda -= parseFloat(this.listaProdutosAdicionados[i].quantidade) * parseFloat(this.listaProdutosAdicionados[i].preco)
     this.listaProdutosAdicionados.splice(i, 1)
   }
 
@@ -311,7 +306,24 @@ export class VendasComponent implements OnInit {
   }
   
   incluirVenda(): void {
-
+    const param = {
+      idCliente: this.clienteSelecionado.id,
+      produtos: this.listaProdutosAdicionados
+    }
+    this.carregandoService.carregando = true
+    this.requisicaoService.post('vendas', param).subscribe({
+      next: (retorno: any) => {
+        console.log(retorno)
+        this.carregandoService.carregando = false
+        
+        this.buscarVendas()
+        this.telaAtiva = 'consultar'
+      },
+      error: (err: any) => {
+        this.carregandoService.carregando = false
+        console.log(err)
+      }
+    })
   }
 
   editarVenda(): void {
@@ -355,11 +367,11 @@ export class VendasComponent implements OnInit {
     console.log(e)
     const string = e.item
     let idProduto = string.replace(/(\d+)\s-\s(.*)/, "$1")
-    // this.vendaForm.controls.idCliente.setValue(idCliente)
     for(let p of this.produtos) {
       if(idProduto == p.id) {
         this.produtoSelecionado = p
         this.precoProdutoSelecionado = p.preco
+        this.quantidadeProdutoSelecionado = 1
         break
       }
     }

@@ -78,7 +78,7 @@
                             <div class="d-flex col-sm-12">
                                 <div class="d-flex flex-column col-sm-12 pe-1">
                                     <label for="cliente">Cliente</label>
-                                    <input id="cliente" type="text" class="form-control" [ngbTypeahead]="pesquisarCliente"  (selectItem)="selecionarCliente($event)"
+                                    <input id="cliente" type="text" class="form-control" [ngbTypeahead]="pesquisarCliente" popupClass="min-width-50pc" (selectItem)="selecionarCliente($event)"
                                            [(ngModel)]="clienteIdNomeCidadeEstado" (ngModelChange)="clienteEstaSelecionado()">
                                 </div>
                             </div>
@@ -146,11 +146,15 @@
 
                             <div class="p-3 my-2 selecionar-produto-borda">
                                 <div class="d-flex col-sm-12">
-                                    <div class="d-flex flex-column col-sm-8 pe-1">
+                                    <div class="d-flex flex-column col-sm-6 pe-1">
                                         <label for="">Descrição</label>
                                         <input [ngModel]="produtoSelecionado?.nome" class="form-control form-control-sm" disabled type="text">
                                     </div>
-                                    <div class="d-flex flex-column col-sm-4 px-1">
+                                    <div class="d-flex flex-column col-sm-3 px-1">
+                                        <label for="">Quantidade</label>
+                                        <input [(ngModel)]="quantidadeProdutoSelecionado" class="form-control form-control-sm" type="text">
+                                    </div>
+                                    <div class="d-flex flex-column col-sm-3 px-1">
                                         <label for="">Preço(R$)</label>
                                         <input [(ngModel)]="precoProdutoSelecionado" class="form-control form-control-sm" type="text">
                                     </div>
@@ -163,7 +167,7 @@
                         </ng-template>
                     </li>
                     <li [ngbNavItem]="3">
-                        <a ngbNavLink>Totais</a>
+                        <a ngbNavLink>Totais ({{ listaProdutosAdicionados.length }})</a>
                         <ng-template ngbNavContent>
                             
                             <table class="table table-sm table-bordered">
@@ -172,7 +176,9 @@
                                         <th>#</th>
                                         <th>Id</th>
                                         <th>Descrição/Nome</th>
-                                        <th>Preço(R$)</th>
+                                        <th>Quantidade</th>
+                                        <th>Preço UN(R$)</th>
+                                        <th>Total Prod.(R$)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -183,10 +189,12 @@
                                         </td>
                                         <td>{{ p?.id }}</td>
                                         <td>{{ p?.nome }}</td>
+                                        <td>{{ p?.quantidade }}</td>
                                         <td>{{ p?.preco | currency: 'BRL' }}</td>
+                                        <td>{{ p?.quantidade * p?.preco | currency: 'BRL' }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-end" colspan="3">Total</td>
+                                        <td class="text-end" colspan="5">Total</td>
                                         <td>{{ totalVenda | currency: 'BRL' }}</td>
                                     </tr>
                                 </tbody>

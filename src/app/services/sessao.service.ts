@@ -25,8 +25,8 @@ export class SessaoService {
   }
 
   validarSessao(): boolean {
-    console.log(this.logado == "S")
-    console.log(window.sessionStorage.getItem("logado"))
+    // console.log(this.logado == "S")
+    // console.log(window.sessionStorage.getItem("logado"))
     if(window.localStorage.getItem("usuario") && 
       (this.logado == "S" || window.sessionStorage.getItem("logado"))) {
       return true
