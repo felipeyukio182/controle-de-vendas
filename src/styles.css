@@ -42,3 +42,10 @@ body {
 .min-width-50pc {
     min-width: 50%;
 }
+
+
+
+/* Componente do Typeahead do bootstrap (não encontrei outra forma para remover ele) */
+#ngb-live {
+    display: none;
+}

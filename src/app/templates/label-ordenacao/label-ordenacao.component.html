@@ -1,6 +1,6 @@
 
-<div class="d-flex div-label" (click)="ordenacaoService.ordenar(arr, nome, atrib, atrib2, formatoData)">
-    <span class="label">{{ label }}</span>
-    <i class="bi bi-sort-alpha-up" *ngIf="ordenacaoService.tipoOrdenacao[nome] && ordenacaoService.tipoOrdenacao[nome] != 'C' && ordenacaoService.ativo[nome]"></i>
-    <i class="bi bi-sort-alpha-up-alt" *ngIf="ordenacaoService.tipoOrdenacao[nome] && ordenacaoService.tipoOrdenacao[nome] == 'C' && ordenacaoService.ativo[nome]"></i>
-  </div>
+<div class="d-flex div-label">
+  <span class="label" (click)="ordenacaoService.ordenar(arr, nome, atrib, atrib2, formatoData)">{{ label }}</span>
+  <i class="bi bi-sort-alpha-up" *ngIf="ordenacaoService.tipoOrdenacao[nome] && ordenacaoService.tipoOrdenacao[nome] != 'C' && ordenacaoService.ativo[nome]"></i>
+  <i class="bi bi-sort-alpha-up-alt" *ngIf="ordenacaoService.tipoOrdenacao[nome] && ordenacaoService.tipoOrdenacao[nome] == 'C' && ordenacaoService.ativo[nome]"></i>
+</div>

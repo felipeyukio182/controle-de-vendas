@@ -4,8 +4,10 @@ import { Router } from '@angular/router';
 import { CarregandoService } from 'src/app/services/carregando.service';
 import { FiltroService } from 'src/app/services/filtro.service';
 import { HeaderService } from 'src/app/services/header.service';
+import { InputService } from 'src/app/services/input.service';
 import { OrdenacaoService } from 'src/app/services/ordenacao.service';
 import { RequisicaoService } from 'src/app/services/requisicao.service';
+import { ToastService } from 'src/app/services/toast.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
@@ -49,6 +51,8 @@ export class ProdutosComponent implements OnInit {
     public carregandoService: CarregandoService,
     public filtroService: FiltroService,
     private ordenacaoService: OrdenacaoService,
+    public inputService: InputService,
+    public toastService: ToastService,
     private router: Router
   ) {
     this.headerService.icone = "bi bi bi-bag"
@@ -69,6 +73,7 @@ export class ProdutosComponent implements OnInit {
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.produtoFiltro)
+    this.produtosFiltrado = [ ...this.produtos ]
   }
 
   irParaEditarProduto(produto: any): void {
@@ -83,6 +88,7 @@ export class ProdutosComponent implements OnInit {
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.produtoFiltro)
+    this.produtosFiltrado = [ ...this.produtos ]
   }
 
   irParaExcluirProduto(produto: any): void {
@@ -98,6 +104,7 @@ export class ProdutosComponent implements OnInit {
     this.produtoForm.disable()
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.produtoFiltro)
+    this.produtosFiltrado = [ ...this.produtos ]
   }
 
   cancelar(): void {
@@ -109,6 +116,28 @@ export class ProdutosComponent implements OnInit {
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.produtoFiltro)
+    this.produtosFiltrado = [ ...this.produtos ]
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
+  validarProdutoForm(): boolean {
+    let valido = true
+    let atributo = ""
+    for(let atrib in this.produtoForm.value) {
+      if(!this.produtoForm.value[atrib] || this.produtoForm.value[atrib].length < 1) {
+        valido = false
+        atributo = atrib
+        break
+      }
+    }
+
+    if(!valido) {
+      document.getElementById(atributo)?.focus()
+      this.toastService.erro(`Campo '${atributo}' está inválido!`)
+    }
+
+    return valido
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,23 +154,31 @@ export class ProdutosComponent implements OnInit {
       },
       error: (err: any) => {
         this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
         console.log(err)
       }
     })
   }
   
   incluirProduto(): void {
+    let valido = this.validarProdutoForm()
+    if(!valido) {
+      return
+    }
+
     this.carregandoService.carregando = true
     this.requisicaoService.post('produtos', this.produtoForm.value).subscribe({
       next: (retorno: any) => {
         this.carregandoService.carregando = false
         this.produtoForm.reset()
         console.log(retorno)
+        this.toastService.sucesso("Produto cadastrado com sucesso!")
         this.telaAtiva = "consultar"
       },
       error: (err: any) => {
         console.log(err)
         this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
       },
       complete: () => {
         this.buscarProdutos()
@@ -150,16 +187,23 @@ export class ProdutosComponent implements OnInit {
   }
 
   editarProduto(): void {
+    let valido = this.validarProdutoForm()
+    if(!valido) {
+      return
+    }
+
     this.carregandoService.carregando = true
     this.requisicaoService.put('produtos', this.produtoForm.value, {id: this.produtoSelecionado.id}).subscribe({
       next: (retorno: any) => {
         this.carregandoService.carregando = false
         this.produtoForm.reset()
         console.log(retorno)
+        this.toastService.sucesso("Produto alterado com sucesso!")
         this.telaAtiva = "consultar"
       },
       error: (err: any) => {
         this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
         console.log(err)
       },
       complete: () => {
@@ -177,10 +221,12 @@ export class ProdutosComponent implements OnInit {
         this.produtoForm.reset()
         this.produtoForm.enable()
         console.log(retorno)
+        this.toastService.sucesso("Produto excluido com sucesso!")
         this.telaAtiva = "consultar"
       },
       error: (err: any) => {
         this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
         console.log(err)
       },
       complete: () => {

@@ -7,7 +7,7 @@ export class FiltroService {
 
   constructor() { }
 
-  filtrar(filtro: string|any, arrayOriginal: Array<any>, atrib: string|Array<string>) {
+  filtrar(filtro: string|any, arrayOriginal: Array<any>, atrib: string|Array<string>): Array<any> {
     let arrayFiltrado = []
 
     // Filtro simples
@@ -21,7 +21,7 @@ export class FiltroService {
       arrayFiltrado = arrayOriginal.filter((elemento: any) => {
         let contemFiltro = true
         for(let a of atrib) {
-          contemFiltro = elemento[a].toLowerCase().includes(filtro[a].toLowerCase())
+          contemFiltro = elemento[a].toString().toLowerCase().includes(filtro[a].toLowerCase())
           if(!contemFiltro) {
             break
           }

@@ -10,31 +10,33 @@
                 <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
             </div>
             <div>
-                <table class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%;">#</th>
-                            <th style="width: 55%;" >
-                                <app-label-ordenacao label="Descrição/Nome" nome="nome" atrib="nome" [arr]="produtosFiltrado"></app-label-ordenacao>
-                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="produtoFiltro.nome" (ngModelChange)="filtrar()">
-                            </th>
-                            <th style="width: 40%;" >
-                                <app-label-ordenacao label="Preço(R$)" nome="preco" atrib="preco" [arr]="produtosFiltrado"></app-label-ordenacao>
-                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="produtoFiltro.preco" (ngModelChange)="filtrar()">
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let produto of produtosFiltrado.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
-                            <td class="d-flex align-items-center justify-content-center">
-                                <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (click)="irParaEditarProduto(produto)"></app-botao-mini>
-                                <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirProduto(produto)"></app-botao-mini>
-                            </td>
-                            <td>{{ produto.nome }}</td>
-                            <td>{{ produto.preco | currency: 'BRL' }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="min-height-400px">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">#</th>
+                                <th style="width: 55%;" >
+                                    <app-label-ordenacao label="Descrição/Nome" nome="nome" atrib="nome" [arr]="produtosFiltrado"></app-label-ordenacao>
+                                    <app-input-padrao [(model)]="produtoFiltro.nome" (modelChange)="filtrar()"></app-input-padrao>
+                                </th>
+                                <th style="width: 40%;" >
+                                    <app-label-ordenacao label="Preço(R$)" nome="preco" atrib="preco" [arr]="produtosFiltrado"></app-label-ordenacao>
+                                    <app-input-padrao [(model)]="produtoFiltro.preco" (modelChange)="filtrar()"></app-input-padrao>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let produto of produtosFiltrado.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
+                                <td class="d-flex align-items-center justify-content-center">
+                                    <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (click)="irParaEditarProduto(produto)"></app-botao-mini>
+                                    <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirProduto(produto)"></app-botao-mini>
+                                </td>
+                                <td>{{ produto.nome }}</td>
+                                <td>{{ produto.preco | currency: 'BRL' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="d-flex justify-content-center align-items-center height-50px">
                     <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="produtos.length"></app-paginacao>
                 </div>
@@ -45,12 +47,14 @@
                 <h1 class="titulo">{{ telaTitulo }}</h1>
                 <div class="d-flex col-sm-12">
                     <div class="d-flex flex-column col-sm-8 pe-1">
-                        <label for="">Descrição</label>
-                        <input formControlName="nome" class="form-control form-control-sm" type="text">
+                        <label>Nome/Descrição</label>
+                        <input #nome id="nome" formControlName="nome" class="form-control form-control-sm" type="text"
+                               (click)="inputService.selecionarTextoInput(nome)" (blur)="inputService.resetarTextoInput(nome)">
                     </div>
                     <div class="d-flex flex-column col-sm-4 px-1">
-                        <label for="">Preço(R$)</label>
-                        <input formControlName="preco" class="form-control form-control-sm" type="text">
+                        <label>Preço(R$)</label>
+                        <input #preco id="preco" formControlName="preco" class="form-control form-control-sm" type="text" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
+                               (click)="inputService.selecionarTextoInput(preco)" (blur)="inputService.resetarTextoInput(preco)">
                     </div>
                 </div>
 

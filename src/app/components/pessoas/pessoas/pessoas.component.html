@@ -10,44 +10,46 @@
                 <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
             </div>
             <div>
-                <table class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%;">#</th>
-                            <th style="width: 30%;" >
-                                <app-label-ordenacao label="Razão Social/Nome" nome="nome" atrib="nome" [arr]="pessoasFiltrada"></app-label-ordenacao>
-                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="pessoaFiltro.nome" (ngModelChange)="filtrar()">
-                            </th>
-                            <th style="width: 30%;" >
-                                <app-label-ordenacao label="CNPJ/CPF" nome="cnpjCpf" atrib="cnpjCpf" [arr]="pessoasFiltrada"></app-label-ordenacao>
-                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="pessoaFiltro.cnpjCpf" (ngModelChange)="filtrar()">
-                            </th>
-                            <th style="width: 15%;">
-                                <app-label-ordenacao label="Cidade" nome="cidade" atrib="cidade" [arr]="pessoasFiltrada"></app-label-ordenacao>
-                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="pessoaFiltro.cidade" (ngModelChange)="filtrar()">
-                            </th>
-                            <th style="width: 10%;">
-                                <app-label-ordenacao label="Estado" nome="estado" atrib="estado" [arr]="pessoasFiltrada"></app-label-ordenacao>
-                                <select class="form-select form-select-sm" name="" id="" [(ngModel)]="pessoaFiltro.estado" (ngModelChange)="filtrar()">
-                                    <option value="">Todos</option>
-                                    <option *ngFor="let estado of utilsService.estados" [value]="estado">{{ estado }}</option>
-                                </select>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let pessoa of pessoasFiltrada.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
-                            <td class="d-flex align-items-center justify-content-center">
-                                <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (click)="irParaEditarPessoa(pessoa)"></app-botao-mini>
-                                <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirPessoa(pessoa)"></app-botao-mini>
-                            </td>
-                            <td>{{ pessoa.nome }}</td>
-                            <td>{{ pessoa.cnpjCpf }}</td>
-                            <td>{{ pessoa.cidade }}</td>
-                            <td>{{ pessoa.estado }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="min-height-400px">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">#</th>
+                                <th style="width: 30%;" >
+                                    <app-label-ordenacao label="Razão Social/Nome" nome="nome" atrib="nome" [arr]="pessoasFiltrada"></app-label-ordenacao>
+                                    <app-input-padrao [(model)]="pessoaFiltro.nome" (modelChange)="filtrar()"></app-input-padrao>
+                                </th>
+                                <th style="width: 30%;" >
+                                    <app-label-ordenacao label="CNPJ/CPF" nome="cnpjCpf" atrib="cnpjCpf" [arr]="pessoasFiltrada"></app-label-ordenacao>
+                                    <app-input-padrao [(model)]="pessoaFiltro.cnpjCpf" (modelChange)="filtrar()"></app-input-padrao>
+                                </th>
+                                <th style="width: 15%;">
+                                    <app-label-ordenacao label="Cidade" nome="cidade" atrib="cidade" [arr]="pessoasFiltrada"></app-label-ordenacao>
+                                    <app-input-padrao [(model)]="pessoaFiltro.cidade" (modelChange)="filtrar()"></app-input-padrao>
+                                </th>
+                                <th style="width: 10%;">
+                                    <app-label-ordenacao label="Estado" nome="estado" atrib="estado" [arr]="pessoasFiltrada"></app-label-ordenacao>
+                                    <select class="form-select form-select-sm" [(ngModel)]="pessoaFiltro.estado" (ngModelChange)="filtrar()">
+                                        <option value="">Todos</option>
+                                        <option *ngFor="let estado of utilsService.estados" [value]="estado">{{ estado }}</option>
+                                    </select>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let pessoa of pessoasFiltrada.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
+                                <td class="d-flex align-items-center justify-content-center">
+                                    <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (click)="irParaEditarPessoa(pessoa)"></app-botao-mini>
+                                    <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirPessoa(pessoa)"></app-botao-mini>
+                                </td>
+                                <td>{{ pessoa.nome }}</td>
+                                <td>{{ pessoa.cnpjCpf }}</td>
+                                <td>{{ pessoa.cidade }}</td>
+                                <td>{{ pessoa.estado }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="d-flex justify-content-center align-items-center height-50px">
                     <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="pessoas.length"></app-paginacao>
                 </div>
@@ -59,41 +61,48 @@
                 <h2 class="sub-titulo">Dados Principais</h2>
                 <div class="d-flex col-sm-12">
                     <div class="d-flex flex-column col-sm-6 pe-1">
-                        <label for="">Razão Social/Nome</label>
-                        <input formControlName="nome" class="form-control form-control-sm" type="text">
+                        <label>Razão Social/Nome</label>
+                        <input #nome id="nome" formControlName="nome" class="form-control form-control-sm" type="text" 
+                               (click)="inputService.selecionarTextoInput(nome)" (blur)="inputService.resetarTextoInput(nome)">
                     </div>
                     <div class="d-flex flex-column col-sm-3 px-1">
-                        <label for="">CNPJ/CPF</label>
-                        <input formControlName="cnpjCpf" class="form-control form-control-sm" type="text">
+                        <label>CNPJ/CPF</label>
+                        <input #cnpjCpf id="cnpjCpf" formControlName="cnpjCpf" class="form-control form-control-sm" type="text" mask="000.000.000-00||00.000.000/0000-00" 
+                               (click)="inputService.selecionarTextoInput(cnpjCpf)" (blur)="inputService.resetarTextoInput(cnpjCpf)">
                     </div>
                     <div class="d-flex flex-column col-sm-3 ps-1">
-                        <label for="">IE</label>
-                        <input formControlName="ie" class="form-control form-control-sm" type="text">
+                        <label>IE</label>
+                        <input #ie id="ie" formControlName="ie" class="form-control form-control-sm" type="text" mask="0*" 
+                               (click)="inputService.selecionarTextoInput(ie)" (blur)="inputService.resetarTextoInput(ie)">
                     </div>
                 </div>
                 <h2 class="sub-titulo mt-2">Endereço</h2>
                 <div class="d-flex col-sm-12">
                     <div class="d-flex flex-column col-sm-9 pe-1">
-                        <label for="">Logradouro</label>
-                        <input formControlName="logradouro" class="form-control form-control-sm" type="text">
+                        <label>Logradouro</label>
+                        <input #logradouro id="logradouro" formControlName="logradouro" class="form-control form-control-sm" type="text" 
+                               (click)="inputService.selecionarTextoInput(logradouro)" (blur)="inputService.resetarTextoInput(logradouro)">
                     </div>
                     <div class="d-flex flex-column col-sm-3 ps-1">
-                        <label for="">Numero</label>
-                        <input formControlName="numero" class="form-control form-control-sm" type="text">
+                        <label>Numero</label>
+                        <input #numero id="numero" formControlName="numero" class="form-control form-control-sm" type="text" mask="0*" 
+                               (click)="inputService.selecionarTextoInput(numero)" (blur)="inputService.resetarTextoInput(numero)">
                     </div>
                 </div>
                 <div class="d-flex">
                     <div class="d-flex flex-column col-sm-6 pe-1">
-                        <label for="">Bairro</label>
-                        <input formControlName="bairro" class="form-control form-control-sm" type="text">
+                        <label>Bairro</label>
+                        <input #bairro id="bairro" formControlName="bairro" class="form-control form-control-sm" type="text" 
+                               (click)="inputService.selecionarTextoInput(bairro)" (blur)="inputService.resetarTextoInput(bairro)">
                     </div>
                     <div class="d-flex flex-column col-sm-4 px-1">
-                        <label for="">Cidade</label>
-                        <input formControlName="cidade" class="form-control form-control-sm" type="text">
+                        <label>Cidade</label>
+                        <input #cidade id="cidade" formControlName="cidade" class="form-control form-control-sm" type="text" 
+                               (click)="inputService.selecionarTextoInput(cidade)" (blur)="inputService.resetarTextoInput(cidade)">
                     </div>
                     <div class="d-flex flex-column col-sm-2 ps-1">
-                        <label for="">Estado</label>
-                        <select formControlName="estado" name="" id="" class="form-select form-select-sm" >
+                        <label>Estado</label>
+                        <select #estado id="estado" formControlName="estado" class="form-select form-select-sm" >
                             <option value=""></option>
                             <option *ngFor="let estado of utilsService.estados" [value]="estado">{{ estado }}</option>
                         </select>

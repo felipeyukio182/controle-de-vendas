@@ -4,10 +4,11 @@
     font-size: 20px;
   }
   
-  .div-label {
+  /* .div-label {
     cursor: pointer;
-  }
+  } */
   
   .label {
+    cursor: pointer;
     color: #0b5ed7;
   }

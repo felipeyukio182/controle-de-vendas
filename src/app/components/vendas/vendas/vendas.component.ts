@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Observable, OperatorFunction } from 'rxjs';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import {concatMap, debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import { CarregandoService } from 'src/app/services/carregando.service';
 import { FiltroService } from 'src/app/services/filtro.service';
 import { HeaderService } from 'src/app/services/header.service';
+import { InputService } from 'src/app/services/input.service';
 import { OrdenacaoService } from 'src/app/services/ordenacao.service';
 import { RequisicaoService } from 'src/app/services/requisicao.service';
+import { ToastService } from 'src/app/services/toast.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
 
@@ -46,7 +48,8 @@ export class VendasComponent implements OnInit {
   // public vendaSelecionada: any = {idVenda: '10'}
   public vendaSelecionada: any = null
   public vendaFiltro: any = {
-    
+    cliente: "",
+    dataFormatada: "",
   }
   
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,15 +59,11 @@ export class VendasComponent implements OnInit {
   public clientesFiltrado: Array<any> = []
   public clienteSelecionado: any = null
 
-  public clienteIdNomeCidadeEstado: string = ""
-
   public produtos: Array<any> = []
   public produtosFiltrado: Array<any> = []
   public produtoSelecionado: any = null
   public precoProdutoSelecionado: any = null
   public quantidadeProdutoSelecionado: any = null
-
-  public produtoIdNome: string = ""
 
   public listaProdutosAdicionados: Array<any> = []
   public totalVenda: number = 0
@@ -76,47 +75,42 @@ export class VendasComponent implements OnInit {
   txt$.pipe(
     debounceTime(200),
     distinctUntilChanged(),
-    map(texto => {
-      if(texto.length < 1) {
-        return []
-      } else {
-        let cli = this.clientes.filter((cliente: any) => {
-          const clienteString = cliente.id + ' - ' + cliente.nome + ' - ' + cliente.cidade + ' - ' + cliente.estado
-          return clienteString.toLowerCase().includes(texto.toLowerCase())
-        })
-        
-        cli = cli.map((cliente: any) => {
-          const clienteString = cliente.id + ' - ' + cliente.nome + ' - ' + cliente.cidade + ' - ' + cliente.estado
-          return clienteString
-        }).slice(0, 10)
-
-        return cli
-      }
-    })
+    map(texto => texto.length < 1 ? [] : 
+      this.clientes.filter((cliente: any) => {
+        const clienteString = cliente.id + ' - ' + cliente.nome + ' - ' + cliente.cidade + ' - ' + cliente.estado
+        return clienteString.toLowerCase().includes(texto.toLowerCase())
+      }).slice(0, 10)
+    )
   )
+
+  formatarClientePopUp(cli: {id: string, nome: string, cidade: string, estado: string}) {
+    return cli.id + ' - ' + cli.nome + ' - ' + cli.cidade + ' - ' + cli.estado
+  }
+
+  formatarClienteInput(cli: {nome: string}) {
+    return cli.nome
+  }
 
   pesquisarProduto: OperatorFunction<string, readonly string[]> = (txt$: Observable<string>) =>
   txt$.pipe(
     debounceTime(200),
     distinctUntilChanged(),
-    map(texto => {
-      if(texto.length < 1) {
-        return []
-      } else {
-        let prod = this.produtos.filter((produto: any) => {
-          const produtoString = produto.id + ' - ' + produto.nome
-          return produtoString.toLowerCase().includes(texto.toLowerCase())
-        })
-        
-        prod = prod.map((produto: any) => {
-          const produtoString = produto.id + ' - ' + produto.nome
-          return produtoString
-        }).slice(0, 10)
-
-        return prod
-      }
-    })
+    map(texto => texto.length < 1 ? [] :
+      this.produtos.filter((produto: any) => {
+        const produtoString = produto.id + ' - ' + produto.nome
+        return produtoString.toLowerCase().includes(texto.toLowerCase())
+      }).slice(0, 10)
+    )
   )
+
+  formatarProdutoPopUp(prod: {id: string, nome: string, cidade: string, estado: string}) {
+    return prod.id + ' - ' + prod.nome
+  }
+
+  formatarProdutoInput(prod: {nome: string}) {
+    return prod.nome
+  }
+
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -125,7 +119,9 @@ export class VendasComponent implements OnInit {
     public utilsService: UtilsService,
     private requisicaoService: RequisicaoService,
     public carregandoService: CarregandoService,
+    public toastService: ToastService,
     public filtroService: FiltroService,
+    public inputService: InputService,
     private ordenacaoService: OrdenacaoService,
     private router: Router
   ) {
@@ -160,6 +156,7 @@ export class VendasComponent implements OnInit {
       },
       error: (err: any) => {
         this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
         console.log(err)
       }
     })
@@ -184,6 +181,13 @@ export class VendasComponent implements OnInit {
     this.pagina = 1
     this.vendaSelecionada = venda
     this.buscarProdutosVenda()
+    for(let c of this.clientes) {
+      if(c.id == venda.idCliente) {
+        this.clienteSelecionado = c
+        break
+      }
+    }
+    this.totalVenda = venda.total
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.vendaFiltro)
@@ -196,6 +200,13 @@ export class VendasComponent implements OnInit {
     this.pagina = 1
     this.vendaSelecionada = venda
     this.buscarProdutosVenda()
+    for(let c of this.clientes) {
+      if(c.id == venda.idCliente) {
+        this.clienteSelecionado = c
+        break
+      }
+    }
+    this.totalVenda = venda.total
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.vendaFiltro)
@@ -205,29 +216,24 @@ export class VendasComponent implements OnInit {
     this.telaAtiva = "consultar"
     this.telaTitulo = ""
 
+    this.navAtiva = 1
+
+    this.resetarVenda()
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.vendaFiltro)
   }
 
-  pesquisarVendasNoPeriodo() {
-    this.carregandoService.carregando = true
-    this.buscarVendas().subscribe({
-      next: (retorno: any) => {
-        this.carregandoService.carregando = false
-        this.vendas = retorno
-        this.vendasFiltrado = retorno
-      },  
-      error: (err: any) => {
-        this.carregandoService.carregando = false
-        console.log(err)
-      }
-    })
-  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Operações na venda
 
-  adicionarProduto() {
+  adicionarProduto(): void {
+    const valido = this.validarProduto()
+    if(!valido) {
+      return
+    }
+
     if(this.estaEditandoProdutoVenda) {
-
       this.totalVenda -= this.listaProdutosAdicionados[this.indexProdutoEditado].quantidade * this.listaProdutosAdicionados[this.indexProdutoEditado].preco
       this.listaProdutosAdicionados[this.indexProdutoEditado] = {
         id: this.produtoSelecionado.id,
@@ -252,32 +258,80 @@ export class VendasComponent implements OnInit {
 
     this.quantidadeProdutoSelecionado = null
     this.precoProdutoSelecionado = null
-    this.produtoIdNome = ""
     this.produtoSelecionado = null
   }
-  editarProduto(i: number) {
+  editarProduto(i: number): void {
     this.indexProdutoEditado = i
     this.estaEditandoProdutoVenda = true
     this.produtoSelecionado = this.listaProdutosAdicionados[i]
-    this.quantidadeProdutoSelecionado = this.listaProdutosAdicionados[i]
+    this.quantidadeProdutoSelecionado = this.listaProdutosAdicionados[i].quantidade
     this.precoProdutoSelecionado = this.listaProdutosAdicionados[i].preco
-    this.produtoIdNome = this.listaProdutosAdicionados[i].id + ' - ' + this.listaProdutosAdicionados[i].nome
     this.navAtiva = 2
   }
-  editarProdutoCancelar() {
+  editarProdutoCancelar(): void {
     this.estaEditandoProdutoVenda = false
     this.indexProdutoEditado = -1
 
     this.quantidadeProdutoSelecionado = null
     this.precoProdutoSelecionado = null
-    this.produtoIdNome = ""
     this.produtoSelecionado = null
+    
+    this.navAtiva = 3
   }
-  excluirProduto(i: number) {
+  excluirProduto(i: number): void {
     this.totalVenda -= parseFloat(this.listaProdutosAdicionados[i].quantidade) * parseFloat(this.listaProdutosAdicionados[i].preco)
     this.listaProdutosAdicionados.splice(i, 1)
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Validações
+
+  validarProduto(): boolean {
+    let valido = true
+
+    if(!this.produtoSelecionado || typeof(this.produtoSelecionado) == "string") {
+      this.toastService.erro("Favor informe o produto.")
+      document.getElementById("produto")?.focus()
+      valido = false
+      return valido
+    }
+    if(!this.quantidadeProdutoSelecionado || this.quantidadeProdutoSelecionado <= 0) {
+      this.toastService.erro("Favor informe uma quantidade.")
+      document.getElementById("quantidade")?.focus()
+      valido = false
+      return valido
+    }
+    if(!this.precoProdutoSelecionado || this.precoProdutoSelecionado <= 0) {
+      this.toastService.erro("Favor informe um preço valido.")
+      document.getElementById("preco")?.focus()
+      valido = false
+      return valido
+    }
+
+    return valido
+  }
+
+  validarVenda(): boolean {
+    let valido = true
+    
+    if(!this.clienteSelecionado || typeof(this.clienteSelecionado) == "string") {
+      this.toastService.erro("Favor informe o cliente!")
+      this.navAtiva = 1
+      document.getElementById("cliente")?.focus()
+      valido = false
+      return valido
+    }
+    if(this.listaProdutosAdicionados.length < 1) {
+      this.toastService.erro("Favor informe um produto!")
+      this.navAtiva = 2
+      document.getElementById("produto")?.focus()
+      valido = false
+      return valido
+    }
+
+    return valido
+  }
+  
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // Requisições
 
@@ -289,109 +343,195 @@ export class VendasComponent implements OnInit {
     return this.requisicaoService.get('pessoas')
   }
   
-
   buscarVendas(): Observable<any> {
-    return this.requisicaoService.get('vendas', {dataInicial: this.dataInicial, dataFinal: this.dataFinal})
+    return this.requisicaoService.get('vendas', {dataInicial: this.dataInicial, dataFinal: `${this.dataFinal} 23:59:59`})
   }
 
-  buscarProdutosVenda() {
-    this.requisicaoService.get('produtosVenda', {idVenda: this.vendaSelecionada.idVenda}).subscribe({
+  pesquisarVendasNoPeriodo(): void {
+    this.carregandoService.carregando = true
+    this.buscarVendas().subscribe({
       next: (retorno: any) => {
+        this.carregandoService.carregando = false
+        this.vendas = retorno
+        this.vendasFiltrado = retorno
+
+        this.dataInicialPesquisada = this.dataInicial
+        this.dataFinalPesquisada = this.dataFinal
+      },  
+      error: (err: any) => {
+        this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
+        console.log(err)
+      }
+    })
+  }
+  
+  buscarProdutosVenda(): void {
+    const query = {
+      idVenda: this.vendaSelecionada.id
+    }
+    this.carregandoService.carregando = true
+    this.requisicaoService.get('produtosVenda', query).subscribe({
+      next: (retorno: any) => {
+        this.carregandoService.carregando = false
         console.log(retorno)
+        this.listaProdutosAdicionados = []
+        for(let p of retorno) {
+          this.listaProdutosAdicionados.push({
+            id: p.idProduto,
+            nome: p.produto,
+            quantidade: p.quantidade,
+            preco: p.preco
+          })
+        }
       },
       error: (err: any) => {
+        this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
         console.log(err)
       }
     })
   }
   
   incluirVenda(): void {
+    const valido = this.validarVenda()
+    if(!valido) {
+      return
+    }
+
     const param = {
       idCliente: this.clienteSelecionado.id,
       produtos: this.listaProdutosAdicionados
     }
     this.carregandoService.carregando = true
-    this.requisicaoService.post('vendas', param).subscribe({
+    this.requisicaoService.post('vendas', param).pipe(
+      concatMap((retorno: any) => {
+        if(retorno == "ok") {
+          return this.buscarVendas()
+        } else {
+          throw retorno
+        }
+      })
+    ).subscribe({
       next: (retorno: any) => {
         console.log(retorno)
         this.carregandoService.carregando = false
         
-        this.buscarVendas()
+        this.vendas = retorno
+        this.vendasFiltrado = retorno
+
+        this.resetarVenda()
+        this.toastService.sucesso("Venda cadastrada com sucesso!")
         this.telaAtiva = 'consultar'
       },
       error: (err: any) => {
         this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
         console.log(err)
       }
     })
   }
 
   editarVenda(): void {
+    const valido = this.validarVenda()
+    if(!valido) {
+      return
+    }
 
+    const param = {
+      idCliente: this.clienteSelecionado.id,
+      produtos: this.listaProdutosAdicionados
+    }
+    const query = {
+      idVenda: this.vendaSelecionada.id
+    }
+    this.carregandoService.carregando = true
+
+    this.requisicaoService.put('vendas', param, query).pipe(
+      concatMap((retorno: any) => {
+        if(retorno == "ok") {
+          return this.buscarVendas()
+        } else {
+          throw retorno
+        }
+      })
+    ).subscribe({
+      next: (retorno: any) => {
+        console.log(retorno)
+        this.carregandoService.carregando = false
+        
+        this.vendas = retorno
+        this.vendasFiltrado = retorno
+
+        this.resetarVenda()
+        this.toastService.sucesso("Venda alterada com sucesso!")
+        this.telaAtiva = 'consultar'
+      },
+      error: (err: any) => {
+        console.log("caiu no err")
+        this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
+        console.log(err)
+      }
+    })
   }
 
   excluirVenda(): void {
+    const query = {
+      idVenda: this.vendaSelecionada.id
+    }
+    this.carregandoService.carregando = true
 
+    this.requisicaoService.delete('vendas', query).pipe(
+      concatMap((retorno: any) => {
+        if(retorno == "ok") {
+          return this.buscarVendas()
+        } else {
+          throw retorno
+        }
+      })
+    ).subscribe({
+      next: (retorno: any) => {
+        console.log(retorno)
+        this.carregandoService.carregando = false
+
+        this.vendas = retorno
+        this.vendasFiltrado = retorno
+
+        this.resetarVenda()
+        this.toastService.sucesso("Venda excluida com sucesso!")
+        this.telaAtiva = 'consultar'
+      },
+      error: (err: any) => {
+        this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
+        console.log(err)
+      }
+    })
   }
 
   
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
-  // Selecionando cliente e produto com Typeahead
+  // Selecionando produto com Typeahead
 
-  selecionarCliente(e: any) {
-    console.log(e)
-    const string = e.item
-    let idCliente = string.replace(/(\d+)\s-\s(.*)/, "$1")
-    for(let c of this.clientes) {
-      if(idCliente == c.id) {
-        this.clienteSelecionado = c
-        break
-      }
-    }
-  }
-  clienteEstaSelecionado() { // Função para resetar o clienteSelecionado e idCliente do vendaForm, caso não esteja selecionado pela função selecionarCliente()
-    let estaSelecionado = false
-    for(let cliente of this.clientes) {
-      if(this.clienteIdNomeCidadeEstado == cliente.id + ' - ' + cliente.nome + ' - ' + cliente.cidade + ' - ' + cliente.estado) {
-        estaSelecionado = true
-        break
-      }
-    }
-    if(!estaSelecionado) {
-      this.clienteSelecionado = null
-    }
+  selecionarProduto(e: any): void {
+    this.produtoSelecionado = e
+    this.precoProdutoSelecionado = e.item.preco
+    this.quantidadeProdutoSelecionado = 1
   }
 
-  selecionarProduto(e: any) {
-    console.log(e)
-    const string = e.item
-    let idProduto = string.replace(/(\d+)\s-\s(.*)/, "$1")
-    for(let p of this.produtos) {
-      if(idProduto == p.id) {
-        this.produtoSelecionado = p
-        this.precoProdutoSelecionado = p.preco
-        this.quantidadeProdutoSelecionado = 1
-        break
-      }
-    }
-  }
-  produtoEstaSelecionado() { // Função para resetar o produtoSelecionado, caso não esteja selecionado pela função selecionarProduto()
-    let estaSelecionado = false
-    for(let produto of this.produtos) {
-      if(this.produtoIdNome == produto.id + ' - ' + produto.nome) {
-        estaSelecionado = true
-        break
-      }
-    }
-    if(!estaSelecionado) {
-      this.produtoSelecionado = null
+  selecionarProdutoChange(): void {
+    if(typeof(this.produtoSelecionado) == "string") {
+      this.precoProdutoSelecionado = null
+      this.quantidadeProdutoSelecionado = null
     }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Utils
   
-  montarDatasInicialFinal() {
+  montarDatasInicialFinal(): void {
     // Um dia tem 86400000 milissegundos
     let dFinal: any = new Date()
     let dFinalMs = Date.parse(dFinal)
@@ -406,8 +546,17 @@ export class VendasComponent implements OnInit {
   }
 
   filtrar(): void {
+    console.log(this.vendas)
     this.pagina = 1
-    this.vendasFiltrado = this.filtroService.filtrar(this.vendaFiltro, this.vendas, ["nome", "preco"])
+    this.vendasFiltrado = this.filtroService.filtrar(this.vendaFiltro, this.vendas, ["cliente", "dataFormatada"])
+  }
+
+  resetarVenda(): void {
+    this.quantidadeProdutoSelecionado = null
+    this.precoProdutoSelecionado = null
+    this.clienteSelecionado = null
+    this.produtoSelecionado = null
+    this.listaProdutosAdicionados = []
   }
 
   voltarInicio(): void {

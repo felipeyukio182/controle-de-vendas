@@ -11,6 +11,8 @@ import { VendasComponent } from './vendas/vendas/vendas.component';
 import { InicioComponent } from './inicio/inicio.component';
 
 import {NgbNavModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgxCurrencyModule } from 'ngx-currency';
+import { NgxMaskModule } from 'ngx-mask';
 
 
 @NgModule({
@@ -29,7 +31,9 @@ import {NgbNavModule, NgbTypeaheadModule} from '@ng-bootstrap/ng-bootstrap';
     TemplatesModule,
     RouterModule,
     NgbTypeaheadModule,
-    NgbNavModule
+    NgbNavModule,
+    NgxCurrencyModule,
+    NgxMaskModule.forRoot()
   ]
 })
 export class ComponentsModule { }

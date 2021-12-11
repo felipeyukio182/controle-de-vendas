@@ -1,0 +1,3 @@
+<input #input [id]="identificador" [type]="tipo" [class]="classe" [placeholder]="substituto"
+       [(ngModel)]="model" (ngModelChange)="inputChange($event)"
+       (click)="selecionarTextoInput(input)" (blur)="resetarTextoInput()">

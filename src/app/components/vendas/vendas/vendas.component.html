@@ -30,36 +30,38 @@
                 <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
             </div>
             <div>
-                <table class="table table-sm table-bordered">
-                    <thead>
-                        <tr>
-                            <th style="width: 5%;">#</th>
-                            <th style="width: 40%;" >
-                                <app-label-ordenacao label="Cliente" nome="cliente" atrib="cliente" [arr]="vendasFiltrado"></app-label-ordenacao>
-                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="vendaFiltro.cliente" (ngModelChange)="filtrar()">
-                            </th>
-                            <th style="width: 40%;" >
-                                <app-label-ordenacao label="Data" nome="data" atrib="data" [arr]="vendasFiltrado"></app-label-ordenacao>
-                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="vendaFiltro.data" (ngModelChange)="filtrar()">
-                            </th>
-                            <th style="width: 15%;" >
-                                <app-label-ordenacao label="Total" nome="total" atrib="total" [arr]="vendasFiltrado"></app-label-ordenacao>
-                                <input class="form-control form-control-sm" placeholder="Pesquisar..." type="text" [(ngModel)]="vendaFiltro.total" (ngModelChange)="filtrar()">
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let venda of vendasFiltrado.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
-                            <td class="d-flex align-items-center justify-content-center">
-                                <app-botao-mini titulo="Editar venda" icone="bi bi-pencil" estiloCss="btn-warning" (click)="irParaEditarVenda(venda)"></app-botao-mini>
-                                <app-botao-mini titulo="Excluir venda" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirVenda(venda)"></app-botao-mini>
-                            </td>
-                            <td>{{ venda.cliente }}</td>
-                            <td>{{ venda.data | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
-                            <td>{{ venda.total | currency: 'BRL' }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="min-height-400px">
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">#</th>
+                                <th style="width: 40%;" >
+                                    <app-label-ordenacao label="Cliente" nome="cliente" atrib="cliente" [arr]="vendasFiltrado"></app-label-ordenacao>
+                                    <app-input-padrao [(model)]="vendaFiltro.cliente" (modelChange)="filtrar()"></app-input-padrao>
+                                </th>
+                                <th style="width: 40%;" >
+                                    <app-label-ordenacao label="Data" nome="data" atrib="data" [arr]="vendasFiltrado"></app-label-ordenacao>
+                                    <app-input-padrao [(model)]="vendaFiltro.dataFormatada" (modelChange)="filtrar()"></app-input-padrao>
+                                </th>
+                                <th style="width: 15%;" >
+                                    <app-label-ordenacao label="Total" nome="total" atrib="total" [arr]="vendasFiltrado"></app-label-ordenacao>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let venda of vendasFiltrado.slice((this.pagina - 1) * this.tamanhoPagina, this.pagina * this.tamanhoPagina)">
+                                <td class="d-flex align-items-center justify-content-center">
+                                    <app-botao-mini titulo="Editar venda" icone="bi bi-pencil" estiloCss="btn-warning" (click)="irParaEditarVenda(venda)"></app-botao-mini>
+                                    <app-botao-mini titulo="Excluir venda" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirVenda(venda)"></app-botao-mini>
+                                </td>
+                                <td>{{ venda.cliente }}</td>
+                                <td>{{ venda.dataFormatada }}</td>
+                                <!-- <td>{{ venda.data | date: 'dd/MM/yyyy HH:mm:ss' }}</td> -->
+                                <td>{{ venda.total | currency: 'BRL' }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="d-flex justify-content-center align-items-center height-50px">
                     <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="vendas.length"></app-paginacao>
                 </div>
@@ -78,50 +80,52 @@
                             <div class="d-flex col-sm-12">
                                 <div class="d-flex flex-column col-sm-12 pe-1">
                                     <label for="cliente">Cliente</label>
-                                    <input id="cliente" type="text" class="form-control" [ngbTypeahead]="pesquisarCliente" popupClass="min-width-50pc" (selectItem)="selecionarCliente($event)"
-                                           [(ngModel)]="clienteIdNomeCidadeEstado" (ngModelChange)="clienteEstaSelecionado()">
+                                    <input #cliente id="cliente" type="text" class="form-control" [ngbTypeahead]="pesquisarCliente" popupClass="min-width-50pc" 
+                                           [resultFormatter]="formatarClientePopUp" [inputFormatter]="formatarClienteInput" [(ngModel)]="clienteSelecionado"
+                                           [disabled]="telaAtiva == 'excluir'" 
+                                           (click)="inputService.selecionarTextoInput(cliente)" (blur)="inputService.resetarTextoInput(cliente)">
                                 </div>
                             </div>
 
 
-                            <div *ngIf="clienteSelecionado">
+                            <div *ngIf="clienteSelecionado && clienteSelecionado.id">
                                 <h2 class="sub-titulo mt-4">Dados Principais</h2>
                                 <div class="d-flex col-sm-12">
                                     <div class="d-flex flex-column col-sm-6 pe-1">
-                                        <label for="">Razão Social/Nome</label>
+                                        <label>Razão Social/Nome</label>
                                         <input [ngModel]="clienteSelecionado?.nome" disabled class="form-control form-control-sm" type="text">
                                     </div>
                                     <div class="d-flex flex-column col-sm-3 px-1">
-                                        <label for="">CNPJ/CPF</label>
+                                        <label>CNPJ/CPF</label>
                                         <input [ngModel]="clienteSelecionado?.cnpjCpf" disabled class="form-control form-control-sm" type="text">
                                     </div>
                                     <div class="d-flex flex-column col-sm-3 ps-1">
-                                        <label for="">IE</label>
+                                        <label>IE</label>
                                         <input [ngModel]="clienteSelecionado?.ie" disabled class="form-control form-control-sm" type="text">
                                     </div>
                                 </div>
                                 <h2 class="sub-titulo mt-2">Endereço</h2>
                                 <div class="d-flex col-sm-12">
                                     <div class="d-flex flex-column col-sm-9 pe-1">
-                                        <label for="">Logradouro</label>
+                                        <label>Logradouro</label>
                                         <input [ngModel]="clienteSelecionado?.logradouro" disabled class="form-control form-control-sm" type="text">
                                     </div>
                                     <div class="d-flex flex-column col-sm-3 ps-1">
-                                        <label for="">Numero</label>
+                                        <label>Numero</label>
                                         <input [ngModel]="clienteSelecionado?.numero" disabled class="form-control form-control-sm" type="text">
                                     </div>
                                 </div>
                                 <div class="d-flex">
                                     <div class="d-flex flex-column col-sm-6 pe-1">
-                                        <label for="">Bairro</label>
+                                        <label>Bairro</label>
                                         <input [ngModel]="clienteSelecionado?.bairro" disabled class="form-control form-control-sm" type="text">
                                     </div>
                                     <div class="d-flex flex-column col-sm-4 px-1">
-                                        <label for="">Cidade</label>
+                                        <label>Cidade</label>
                                         <input [ngModel]="clienteSelecionado?.cidade" disabled class="form-control form-control-sm" type="text">
                                     </div>
                                     <div class="d-flex flex-column col-sm-2 ps-1">
-                                        <label for="">Estado</label>
+                                        <label>Estado</label>
                                         <select [ngModel]="clienteSelecionado?.estado" disabled class="form-select form-select-sm" >
                                             <option value=""></option>
                                             <option *ngFor="let estado of utilsService.estados" [value]="estado">{{ estado }}</option>
@@ -132,34 +136,39 @@
 
                         </ng-template>
                     </li>
-                    <li [ngbNavItem]="2">
+                    <li [ngbNavItem]="2" [disabled]="telaAtiva == 'excluir'">
                         <a ngbNavLink>Produtos</a>
                         <ng-template ngbNavContent>
                             
                             <div class="d-flex col-sm-12">
                                 <div class="d-flex flex-column col-sm-12 pe-1">
                                     <label for="produto">Produto</label>
-                                    <input id="produto" type="text" class="form-control" [ngbTypeahead]="pesquisarProduto"  (selectItem)="selecionarProduto($event)"
-                                           [(ngModel)]="produtoIdNome" (ngModelChange)="produtoEstaSelecionado()">
+                                    <input #produto id="produto" type="text" class="form-control" [ngbTypeahead]="pesquisarProduto" popupClass="min-width-50pc"
+                                           [resultFormatter]="formatarProdutoPopUp" [inputFormatter]="formatarProdutoInput" (selectItem)="selecionarProduto($event)"
+                                           [(ngModel)]="produtoSelecionado" (ngModelChange)="selecionarProdutoChange()"
+                                           (click)="inputService.selecionarTextoInput(produto)" (blur)="inputService.resetarTextoInput(produto)">
                                 </div>
                             </div>
 
                             <div class="p-3 my-2 selecionar-produto-borda">
                                 <div class="d-flex col-sm-12">
                                     <div class="d-flex flex-column col-sm-6 pe-1">
-                                        <label for="">Descrição</label>
+                                        <label>Descrição</label>
                                         <input [ngModel]="produtoSelecionado?.nome" class="form-control form-control-sm" disabled type="text">
                                     </div>
                                     <div class="d-flex flex-column col-sm-3 px-1">
-                                        <label for="">Quantidade</label>
-                                        <input [(ngModel)]="quantidadeProdutoSelecionado" class="form-control form-control-sm" type="text">
+                                        <label>Quantidade</label>
+                                        <input #quantidade id="quantidade" [(ngModel)]="quantidadeProdutoSelecionado" class="form-control form-control-sm" type="text"
+                                               mask='000000' (click)="inputService.selecionarTextoInput(quantidade)" (blur)="inputService.resetarTextoInput(quantidade)">
                                     </div>
                                     <div class="d-flex flex-column col-sm-3 px-1">
-                                        <label for="">Preço(R$)</label>
-                                        <input [(ngModel)]="precoProdutoSelecionado" class="form-control form-control-sm" type="text">
+                                        <label>Preço(R$)</label>
+                                        <input #preco id="preco" [(ngModel)]="precoProdutoSelecionado" class="form-control form-control-sm" type="text" 
+                                               currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
+                                               (click)="inputService.selecionarTextoInput(preco)" (blur)="inputService.resetarTextoInput(preco)">
                                     </div>
                                 </div>
-                                <button class="btn btn-sm btn-outline-primary mt-2" (click)="adicionarProduto()">Adicionar</button>
+                                <button class="btn btn-sm btn-outline-primary mt-2 me-1" (click)="adicionarProduto()">Adicionar</button>
                                 <button *ngIf="estaEditandoProdutoVenda" class="btn btn-sm btn-outline-danger mt-2" (click)="editarProdutoCancelar()">Cancelar</button>
                             </div>
 
@@ -170,35 +179,37 @@
                         <a ngbNavLink>Totais ({{ listaProdutosAdicionados.length }})</a>
                         <ng-template ngbNavContent>
                             
-                            <table class="table table-sm table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Id</th>
-                                        <th>Descrição/Nome</th>
-                                        <th>Quantidade</th>
-                                        <th>Preço UN(R$)</th>
-                                        <th>Total Prod.(R$)</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor="let p of listaProdutosAdicionados, index as i">
-                                        <td class="d-flex align-items-center justify-content-center">
-                                            <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (click)="editarProduto(i)"></app-botao-mini>
-                                            <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (click)="excluirProduto(i)"></app-botao-mini> 
-                                        </td>
-                                        <td>{{ p?.id }}</td>
-                                        <td>{{ p?.nome }}</td>
-                                        <td>{{ p?.quantidade }}</td>
-                                        <td>{{ p?.preco | currency: 'BRL' }}</td>
-                                        <td>{{ p?.quantidade * p?.preco | currency: 'BRL' }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end" colspan="5">Total</td>
-                                        <td>{{ totalVenda | currency: 'BRL' }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="min-height-400px">
+                                <table class="table table-sm table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Id</th>
+                                            <th>Descrição/Nome</th>
+                                            <th>Quantidade</th>
+                                            <th>Preço UN(R$)</th>
+                                            <th>Total Prod.(R$)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let p of listaProdutosAdicionados, index as i">
+                                            <td class="d-flex align-items-center justify-content-center">
+                                                <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (clique)="editarProduto(i)" [desabilitado]="telaAtiva == 'excluir'"></app-botao-mini>
+                                                <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (clique)="excluirProduto(i)" [desabilitado]="telaAtiva == 'excluir'"></app-botao-mini>
+                                            </td>
+                                            <td>{{ p?.id }}</td>
+                                            <td>{{ p?.nome }}</td>
+                                            <td>{{ p?.quantidade }}</td>
+                                            <td>{{ p?.preco | currency: 'BRL' }}</td>
+                                            <td>{{ p?.quantidade * p?.preco | currency: 'BRL' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-end" colspan="5">Total</td>
+                                            <td><strong>{{ totalVenda | currency: 'BRL' }}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
                             <div class="d-flex justify-content-center align-items-center height-50px">
                                 <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="listaProdutosAdicionados.length"></app-paginacao>

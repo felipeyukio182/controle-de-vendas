@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HeaderService } from 'src/app/services/header.service';
 import { RequisicaoService } from 'src/app/services/requisicao.service';
@@ -7,6 +7,8 @@ import { CarregandoService } from 'src/app/services/carregando.service';
 import { FiltroService } from 'src/app/services/filtro.service';
 import { OrdenacaoService } from 'src/app/services/ordenacao.service';
 import { Router } from '@angular/router';
+import { ToastService } from 'src/app/services/toast.service';
+import { InputService } from 'src/app/services/input.service';
 
 @Component({
   selector: 'app-pessoas',
@@ -49,13 +51,17 @@ export class PessoasComponent implements OnInit {
     estado:      new FormControl("", Validators.required),
   })
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  
   constructor(
     public headerService: HeaderService,
     public utilsService: UtilsService,
     private requisicaoService: RequisicaoService,
     public carregandoService: CarregandoService,
     public filtroService: FiltroService,
+    public toastService: ToastService,
     private ordenacaoService: OrdenacaoService,
+    public inputService: InputService,
     private router: Router
   ) {
     this.headerService.icone = "bi bi-people"
@@ -76,6 +82,7 @@ export class PessoasComponent implements OnInit {
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.pessoaFiltro)
+    this.pessoasFiltrada = [ ...this.pessoas ]
   }
 
   irParaEditarPessoa(pessoa: any): void {
@@ -96,6 +103,7 @@ export class PessoasComponent implements OnInit {
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.pessoaFiltro)
+    this.pessoasFiltrada = [ ...this.pessoas ]
   }
   irParaExcluirPessoa(pessoa: any): void {
     this.telaAtiva = "excluir"
@@ -116,6 +124,7 @@ export class PessoasComponent implements OnInit {
     this.pessoaForm.disable()
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.pessoaFiltro)
+    this.pessoasFiltrada = [ ...this.pessoas ]
   }
 
   cancelar(): void {
@@ -127,6 +136,36 @@ export class PessoasComponent implements OnInit {
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.pessoaFiltro)
+    this.pessoasFiltrada = [ ...this.pessoas ]
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+
+  validarPessoaForm(): boolean {
+    let valido = true
+    let atributo = ""
+    for(let atrib in this.pessoaForm.value) {
+      if(atrib == "ie") {
+        continue
+
+      } else if(atrib == "cnpjCpf" && (this.pessoaForm.value[atrib].length != 11 && this.pessoaForm.value[atrib].length != 14)) {
+        valido = false
+        atributo = atrib
+        break
+
+      } else if(!this.pessoaForm.value[atrib] || this.pessoaForm.value[atrib].length < 1) {
+        valido = false
+        atributo = atrib
+        break
+      }
+    }
+
+    if(!valido) {
+      document.getElementById(atributo)?.focus()
+      this.toastService.erro(`Campo '${atributo}' está inválido!`)
+    }
+
+    return valido
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,23 +182,31 @@ export class PessoasComponent implements OnInit {
       },
       error: (err: any) => {
         this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
         console.log(err)
       }
     })
   }
   
   incluirPessoa(): void {
+    const valido = this.validarPessoaForm()
+    if(!valido) {
+      return
+    }
+
     this.carregandoService.carregando = true
     this.requisicaoService.post('pessoas', this.pessoaForm.value).subscribe({
       next: (retorno: any) => {
         this.carregandoService.carregando = false
         this.pessoaForm.reset()
         console.log(retorno)
+          this.toastService.sucesso("Pessoa cadastrada com sucesso!")
         this.telaAtiva = "consultar"
       },
       error: (err: any) => {
         console.log(err)
         this.carregandoService.carregando = false
+          this.toastService.erroAoRequisitarServidor()
       },
       complete: () => {
         this.buscarPessoas()
@@ -168,16 +215,23 @@ export class PessoasComponent implements OnInit {
   }
 
   editarPessoa(): void {
+    const valido = this.validarPessoaForm()
+    if(!valido) {
+      return
+    }
+
     this.carregandoService.carregando = true
     this.requisicaoService.put('pessoas', this.pessoaForm.value, {id: this.pessoaSelecionada.id}).subscribe({
       next: (retorno: any) => {
         this.carregandoService.carregando = false
         this.pessoaForm.reset()
         console.log(retorno)
+        this.toastService.sucesso("Pessoa alterada com sucesso!")
         this.telaAtiva = "consultar"
       },
       error: (err: any) => {
         this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
         console.log(err)
       },
       complete: () => {
@@ -188,6 +242,7 @@ export class PessoasComponent implements OnInit {
   }
 
   excluirPessoa(): void {
+
     this.carregandoService.carregando = true
     this.requisicaoService.delete('pessoas', {id: this.pessoaSelecionada.id}).subscribe({
       next: (retorno: any) => {
@@ -195,10 +250,12 @@ export class PessoasComponent implements OnInit {
         this.pessoaForm.reset()
         this.pessoaForm.enable()
         console.log(retorno)
+        this.toastService.sucesso("Pessoa excluida com sucesso!")
         this.telaAtiva = "consultar"
       },
       error: (err: any) => {
         this.carregandoService.carregando = false
+        this.toastService.erroAoRequisitarServidor()
         console.log(err)
       },
       complete: () => {
