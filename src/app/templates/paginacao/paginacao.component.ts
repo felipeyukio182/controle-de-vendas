@@ -1,17 +1,17 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewChecked, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-paginacao',
   templateUrl: './paginacao.component.html',
   styleUrls: ['./paginacao.component.css']
 })
-export class PaginacaoComponent implements OnInit {
+export class PaginacaoComponent implements OnInit, AfterViewChecked {
 
   @Input() pagina: any = 1
   @Input() itensPorPagina: any = 10
   @Input() tamanhoLista: any = 100
 
-  @Output() paginaChange = new EventEmitter<number>()
+  @Output() paginaChange: EventEmitter<number> = new EventEmitter<number>()
 
   public qtdePaginas: number = 0
   public arrayPaginas: Array<number> = []
@@ -22,6 +22,15 @@ export class PaginacaoComponent implements OnInit {
 
   ngOnInit(): void {
     // console.log(this.tamanhoLista)
+    this.arrayPaginas = []
+    this.qtdePaginas = Math.ceil(this.tamanhoLista/this.itensPorPagina)
+    for(let i = 0; i < this.qtdePaginas; i++) {
+      this.arrayPaginas.push(i)
+    }
+  }
+  
+  ngAfterViewChecked() {
+    this.arrayPaginas = []
     this.qtdePaginas = Math.ceil(this.tamanhoLista/this.itensPorPagina)
     for(let i = 0; i < this.qtdePaginas; i++) {
       this.arrayPaginas.push(i)

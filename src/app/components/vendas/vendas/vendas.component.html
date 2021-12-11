@@ -150,7 +150,7 @@
                                 </div>
                             </div>
 
-                            <div class="p-3 my-2 selecionar-produto-borda">
+                            <div class="p-3 my-2" [ngClass]="estaEditandoProdutoVenda ? 'editar-produto-borda' : 'selecionar-produto-borda'">
                                 <div class="d-flex col-sm-12">
                                     <div class="d-flex flex-column col-sm-6 pe-1">
                                         <label>Descrição</label>
@@ -170,6 +170,42 @@
                                 </div>
                                 <button class="btn btn-sm btn-outline-primary mt-2 me-1" (click)="adicionarProduto()">Adicionar</button>
                                 <button *ngIf="estaEditandoProdutoVenda" class="btn btn-sm btn-outline-danger mt-2" (click)="editarProdutoCancelar()">Cancelar</button>
+                            </div>
+
+                            <div class="min-height-250px">
+                                <table class="table table-sm table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Id</th>
+                                            <th>Descrição/Nome</th>
+                                            <th>Quantidade</th>
+                                            <th>Preço UN(R$)</th>
+                                            <th>Total Prod.(R$)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let p of listaProdutosAdicionados.slice((paginaProduto - 1) * tamanhoPaginaProduto, paginaProduto * tamanhoPaginaProduto), index as i">
+                                            <td class="d-flex align-items-center justify-content-center">
+                                                <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (clique)="editarProduto(i)" [desabilitado]="telaAtiva == 'excluir'"></app-botao-mini>
+                                                <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (clique)="excluirProduto(i)" [desabilitado]="telaAtiva == 'excluir'"></app-botao-mini>
+                                            </td>
+                                            <td>{{ p?.id }}</td>
+                                            <td>{{ p?.nome }}</td>
+                                            <td>{{ p?.quantidade }}</td>
+                                            <td>{{ p?.preco | currency: 'BRL' }}</td>
+                                            <td>{{ p?.quantidade * p?.preco | currency: 'BRL' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-end" colspan="5">Total</td>
+                                            <td><strong>{{ totalVenda | currency: 'BRL' }}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div *ngIf="listaProdutosAdicionados.length > 0" class="d-flex justify-content-center align-items-center height-50px">
+                                <app-paginacao [itensPorPagina]="tamanhoPaginaProduto" [(pagina)]="paginaProduto" [tamanhoLista]="listaProdutosAdicionados.length"></app-paginacao>
                             </div>
 
 
@@ -192,7 +228,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let p of listaProdutosAdicionados, index as i">
+                                        <tr *ngFor="let p of listaProdutosAdicionados.slice((paginaTotal - 1) * tamanhoPaginaTotal, paginaTotal * tamanhoPaginaTotal), index as i">
                                             <td class="d-flex align-items-center justify-content-center">
                                                 <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (clique)="editarProduto(i)" [desabilitado]="telaAtiva == 'excluir'"></app-botao-mini>
                                                 <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (clique)="excluirProduto(i)" [desabilitado]="telaAtiva == 'excluir'"></app-botao-mini>
@@ -212,14 +248,14 @@
                             </div>
 
                             <div class="d-flex justify-content-center align-items-center height-50px">
-                                <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="listaProdutosAdicionados.length"></app-paginacao>
+                                <app-paginacao [itensPorPagina]="tamanhoPaginaTotal" [(pagina)]="paginaTotal" [tamanhoLista]="listaProdutosAdicionados.length"></app-paginacao>
                             </div>
 
                         </ng-template>
                     </li>
                 </ul>
                 
-                <div [ngbNavOutlet]="nav" class="mt-2 min-height-400px"></div>
+                <div [ngbNavOutlet]="nav" class="mt-2 min-height-500px"></div>
 
 
 

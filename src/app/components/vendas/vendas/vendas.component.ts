@@ -28,6 +28,12 @@ export class VendasComponent implements OnInit {
   public pagina: number = 1
   public tamanhoPagina: number = 10
 
+  public paginaProduto: number = 1
+  public tamanhoPaginaProduto: number = 5
+
+  public paginaTotal: number = 1
+  public tamanhoPaginaTotal: number = 10
+
   public navAtiva: number = 1
 
   public estaEditandoProdutoVenda: boolean = false
@@ -170,8 +176,13 @@ export class VendasComponent implements OnInit {
     this.telaTitulo = "Nova venda"
 
     this.pagina = 1
+    this.paginaProduto = 1
+    this.paginaTotal = 1
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.vendaFiltro)
+    this.totalVenda = 0
+
+    this.vendasFiltrado = [ ...this.vendas ]
   }
 
   irParaEditarVenda(venda: any): void {
@@ -179,6 +190,8 @@ export class VendasComponent implements OnInit {
     this.telaTitulo = "Editar venda"
 
     this.pagina = 1
+    this.paginaProduto = 1
+    this.paginaTotal = 1
     this.vendaSelecionada = venda
     this.buscarProdutosVenda()
     for(let c of this.clientes) {
@@ -191,6 +204,8 @@ export class VendasComponent implements OnInit {
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.vendaFiltro)
+
+    this.vendasFiltrado = [ ...this.vendas ]
   }
 
   irParaExcluirVenda(venda: any): void {
@@ -198,6 +213,8 @@ export class VendasComponent implements OnInit {
     this.telaTitulo = "Excluir venda"
 
     this.pagina = 1
+    this.paginaProduto = 1
+    this.paginaTotal = 1
     this.vendaSelecionada = venda
     this.buscarProdutosVenda()
     for(let c of this.clientes) {
@@ -210,6 +227,8 @@ export class VendasComponent implements OnInit {
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.vendaFiltro)
+
+    this.vendasFiltrado = [ ...this.vendas ]
   }
 
   cancelar(): void {
@@ -222,6 +241,9 @@ export class VendasComponent implements OnInit {
 
     this.ordenacaoService.resetarOrdenacao()
     this.filtroService.resetarFiltro(this.vendaFiltro)
+    this.totalVenda = 0
+
+    this.vendasFiltrado = [ ...this.vendas ]
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,6 +281,8 @@ export class VendasComponent implements OnInit {
     this.quantidadeProdutoSelecionado = null
     this.precoProdutoSelecionado = null
     this.produtoSelecionado = null
+
+    document.getElementById("produto")?.focus()
   }
   editarProduto(i: number): void {
     this.indexProdutoEditado = i
@@ -276,7 +300,7 @@ export class VendasComponent implements OnInit {
     this.precoProdutoSelecionado = null
     this.produtoSelecionado = null
     
-    this.navAtiva = 3
+    this.navAtiva = 2
   }
   excluirProduto(i: number): void {
     this.totalVenda -= parseFloat(this.listaProdutosAdicionados[i].quantidade) * parseFloat(this.listaProdutosAdicionados[i].preco)
