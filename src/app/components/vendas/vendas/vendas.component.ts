@@ -11,6 +11,7 @@ import { RequisicaoService } from 'src/app/services/requisicao.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-vendas',
@@ -20,10 +21,10 @@ import { UtilsService } from 'src/app/services/utils.service';
 export class VendasComponent implements OnInit {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
-  // Navegar nas Telas e utils
+  // Gerais
 
-  public telaAtiva: "incluir"|"consultar"|"editar"|"excluir" = "consultar"
-  public telaTitulo: string = ""
+  private usuario: any = null
+  public nomeUsuario: string = ""
 
   public pagina: number = 1
   public tamanhoPagina: number = 10
@@ -40,6 +41,12 @@ export class VendasComponent implements OnInit {
   public indexProdutoEditado: number = -1
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Navegar nas Telas
+
+  public telaAtiva: "incluir"|"consultar"|"editar"|"excluir" = "consultar"
+  public telaTitulo: string = ""
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   // Vendas
   
   public dataInicial: string = ""
@@ -49,12 +56,12 @@ export class VendasComponent implements OnInit {
   public dataFinalPesquisada: string = ""
   
   public vendas: Array<any> = []
-  public vendasFiltrado: Array<any> = [{a: 1}]
-  
-  // public vendaSelecionada: any = {idVenda: '10'}
+  public vendasFiltrado: Array<any> = []
+
   public vendaSelecionada: any = null
   public vendaFiltro: any = {
     cliente: "",
+    cnpjCpf: "",
     dataFormatada: "",
   }
   
@@ -136,6 +143,9 @@ export class VendasComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.usuario = JSON.parse(localStorage.getItem("usuario")!) || ""
+    this.nomeUsuario = this.usuario.usuario
+
     this.montarDatasInicialFinal()
 
     this.carregandoService.carregando = true
@@ -569,10 +579,55 @@ export class VendasComponent implements OnInit {
     this.dataFinalPesquisada = this.dataFinal
   }
 
+  exportarVendasExcel(): void {
+    // Espaçamento das colunas
+    const colProp = [{wch: 38}, {wch: 18}, {wch: 20}, {wch: 15}]
+
+    // Merge em duas ou mais linhas ou colunas ou linhas
+    const mergeProp = [
+      { s: { r: 0, c: 2 }, e: { r: 0, c: 4 } }
+    ]
+
+    let array = [
+      ["Controle de Vendas", "", `Usuario: ${this.nomeUsuario}`],
+      [],
+      [`Vendas do periodo: ${this.dataInicialPesquisada} - ${this.dataFinalPesquisada}`],
+      [],
+      ["Cliente", "CNPJ/CPF", "Data", "Total Venda (R$)"]
+    ]
+
+    let totalPeriodo = 0
+    let a = this.vendasFiltrado.map((venda: any) => {
+      totalPeriodo += venda.total
+      return [
+        venda.cliente,
+        venda.cnpjCpf,
+        venda.dataFormatada,
+        venda.total.toFixed(2)
+      ]
+    })
+
+    array.push(...a, ["", "", "Total (R$)", totalPeriodo.toFixed(2).toString()])
+
+    let workSheet = XLSX.utils.aoa_to_sheet(array)
+    workSheet['!cols'] = colProp
+    workSheet['!merges'] = mergeProp
+
+    let workbook = XLSX.utils.book_new()
+    let nomeSheet = `Vendas`
+    
+    XLSX.utils.book_append_sheet(workbook, workSheet, nomeSheet)
+
+    // Força o download
+    let dataMs = Date.parse((new Date()).toString())
+    let fileName = `Vendas_${this.dataInicialPesquisada}_${this.dataFinalPesquisada}_${dataMs}`;
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
+  }
+
   filtrar(): void {
     console.log(this.vendas)
     this.pagina = 1
-    this.vendasFiltrado = this.filtroService.filtrar(this.vendaFiltro, this.vendas, ["cliente", "dataFormatada"])
+    this.vendasFiltrado = this.filtroService.filtrar(this.vendaFiltro, this.vendas, ["cliente", "cnpjCpf", "dataFormatada"])
   }
 
   resetarVenda(): void {

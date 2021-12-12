@@ -10,12 +10,20 @@ import { Router } from '@angular/router';
 import { ToastService } from 'src/app/services/toast.service';
 import { InputService } from 'src/app/services/input.service';
 
+import * as XLSX from 'xlsx';
+
 @Component({
   selector: 'app-pessoas',
   templateUrl: './pessoas.component.html',
   styleUrls: ['./pessoas.component.css']
 })
 export class PessoasComponent implements OnInit {
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Gerais
+
+  private usuario: any = null
+  public nomeUsuario: string = ""
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // Navegar nas Telas
@@ -69,6 +77,9 @@ export class PessoasComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.usuario = JSON.parse(localStorage.getItem("usuario")!) || ""
+    this.nomeUsuario = this.usuario.usuario
+
     this.buscarPessoas()
   }
 
@@ -140,6 +151,7 @@ export class PessoasComponent implements OnInit {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Validação
 
   validarPessoaForm(): boolean {
     let valido = true
@@ -148,7 +160,7 @@ export class PessoasComponent implements OnInit {
       if(atrib == "ie") {
         continue
 
-      } else if(atrib == "cnpjCpf" && (this.pessoaForm.value[atrib].length != 11 && this.pessoaForm.value[atrib].length != 14)) {
+      } else if(atrib == "cnpjCpf" && (this.pessoaForm.value[atrib].length != 14 && this.pessoaForm.value[atrib].length != 18)) {
         valido = false
         atributo = atrib
         break
@@ -262,6 +274,54 @@ export class PessoasComponent implements OnInit {
         this.buscarPessoas()
       }
     })
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Utils
+
+  exportarPessoasExcel(): void {
+    // Espaçamento das colunas
+    const colProp = [{wch: 35}, {wch: 18}, {wch: 12}, {wch: 15}, {wch: 6}, {wch: 10}, {wch: 10}, {wch: 6},]
+
+    // Merge em duas ou mais linhas ou colunas ou linhas
+    const mergeProp = [
+      { s: { r: 0, c: 2 }, e: { r: 0, c: 4 } }
+    ]
+
+    let array = [
+      ["Controle de Vendas", "", `Usuario: ${this.nomeUsuario}`],
+      [],
+      ["Razão Social/Nome", "CNPJ/CPF", "IE", "Logradouro", "Numero", "Bairro", "Cidade", "Estado"]
+    ]
+
+    let a = this.pessoasFiltrada.map((pessoa: any) => {
+      return [
+        pessoa.nome,
+        pessoa.cnpjCpf,
+        pessoa.ie || '',
+        pessoa.logradouro,
+        pessoa.numero,
+        pessoa.bairro,
+        pessoa.cidade,
+        pessoa.estado
+      ]
+    })
+
+    array.push(...a)
+
+    let workSheet = XLSX.utils.aoa_to_sheet(array)
+    workSheet['!cols'] = colProp
+    workSheet['!merges'] = mergeProp
+
+    let workbook = XLSX.utils.book_new()
+    let nomeSheet = `Pessoas`
+    
+    XLSX.utils.book_append_sheet(workbook, workSheet, nomeSheet)
+
+    // Força o download
+    let dataMs = Date.parse((new Date()).toString())
+    let fileName = `Pessoas_${dataMs}`;
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
   }
 
   filtrar(): void {

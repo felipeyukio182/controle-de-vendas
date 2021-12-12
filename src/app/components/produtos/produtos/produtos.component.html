@@ -7,7 +7,11 @@
         <div *ngIf="telaAtiva == 'consultar'" class="conteudo">
             <div class="d-flex justify-content-between align-items-center height-50px">
                 <button class="btn btn-sm btn-primary" title="Novo Produto" (click)="irParaIncluirProduto()">+ Novo Produto</button>
-                <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
+
+                <div>
+                    <button class="btn btn-sm btn-success me-3" (click)="exportarProdutosExcel()">Exportar em excel</button>
+                    <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
+                </div>
             </div>
             <div>
                 <div class="min-height-400px">

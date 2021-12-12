@@ -24,10 +24,13 @@
                         <input class="form-control form-control-sm" type="date" id="dataFinal" [(ngModel)]="dataFinal">
                     </div>
 
-                    <button class="btn btn-sm btn-success" (click)="pesquisarVendasNoPeriodo()">Pesquisar</button>
+                    <button class="btn btn-sm btn-outline-primary" (click)="pesquisarVendasNoPeriodo()">Pesquisar</button>
 
                 </div>
-                <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
+                <div>
+                    <button class="btn btn-sm btn-success me-3" (click)="exportarVendasExcel()">Exportar em Excel</button>
+                    <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
+                </div>
             </div>
             <div>
                 <div class="min-height-400px">
@@ -35,11 +38,15 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%;">#</th>
-                                <th style="width: 40%;" >
+                                <th style="width: 35%;" >
                                     <app-label-ordenacao label="Cliente" nome="cliente" atrib="cliente" [arr]="vendasFiltrado"></app-label-ordenacao>
                                     <app-input-padrao [(model)]="vendaFiltro.cliente" (modelChange)="filtrar()"></app-input-padrao>
                                 </th>
-                                <th style="width: 40%;" >
+                                <th style="width: 25%;" >
+                                    <app-label-ordenacao label="CNPJ/CPF" nome="cnpjCpf" atrib="cnpjCpf" [arr]="vendasFiltrado"></app-label-ordenacao>
+                                    <app-input-padrao [(model)]="vendaFiltro.cnpjCpf" (modelChange)="filtrar()"></app-input-padrao>
+                                </th>
+                                <th style="width: 20%;" >
                                     <app-label-ordenacao label="Data" nome="data" atrib="data" [arr]="vendasFiltrado"></app-label-ordenacao>
                                     <app-input-padrao [(model)]="vendaFiltro.dataFormatada" (modelChange)="filtrar()"></app-input-padrao>
                                 </th>
@@ -55,6 +62,7 @@
                                     <app-botao-mini titulo="Excluir venda" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirVenda(venda)"></app-botao-mini>
                                 </td>
                                 <td>{{ venda.cliente }}</td>
+                                <td>{{ venda.cnpjCpf }}</td>
                                 <td>{{ venda.dataFormatada }}</td>
                                 <!-- <td>{{ venda.data | date: 'dd/MM/yyyy HH:mm:ss' }}</td> -->
                                 <td>{{ venda.total | currency: 'BRL' }}</td>

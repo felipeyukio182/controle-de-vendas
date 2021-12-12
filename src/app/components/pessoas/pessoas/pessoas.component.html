@@ -7,7 +7,11 @@
         <div *ngIf="telaAtiva == 'consultar'" class="conteudo">
             <div class="d-flex justify-content-between align-items-center height-50px">
                 <button class="btn btn-sm btn-primary" title="Nova pessoa" (click)="irParaIncluirPessoa()">+ Nova Pessoa</button>
-                <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
+
+                <div>
+                    <button class="btn btn-sm btn-success me-3" (click)="exportarPessoasExcel()">Exportar em excel</button>
+                    <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
+                </div>
             </div>
             <div>
                 <div class="min-height-400px">
@@ -67,7 +71,8 @@
                     </div>
                     <div class="d-flex flex-column col-sm-3 px-1">
                         <label>CNPJ/CPF</label>
-                        <input #cnpjCpf id="cnpjCpf" formControlName="cnpjCpf" class="form-control form-control-sm" type="text" mask="000.000.000-00||00.000.000/0000-00" 
+                        <input #cnpjCpf id="cnpjCpf" formControlName="cnpjCpf" class="form-control form-control-sm" type="text" 
+                               mask="000.000.000-00||00.000.000/0000-00" [dropSpecialCharacters]="false"
                                (click)="inputService.selecionarTextoInput(cnpjCpf)" (blur)="inputService.resetarTextoInput(cnpjCpf)">
                     </div>
                     <div class="d-flex flex-column col-sm-3 ps-1">

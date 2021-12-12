@@ -10,12 +10,20 @@ import { RequisicaoService } from 'src/app/services/requisicao.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
+import * as XLSX from 'xlsx';
+
 @Component({
   selector: 'app-produtos',
   templateUrl: './produtos.component.html',
   styleUrls: ['./produtos.component.css']
 })
 export class ProdutosComponent implements OnInit {
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Gerais
+
+  private usuario: any = null
+  public nomeUsuario: string = ""
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // Navegar nas Telas
@@ -60,6 +68,9 @@ export class ProdutosComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.usuario = JSON.parse(localStorage.getItem("usuario")!) || ""
+    this.nomeUsuario = this.usuario.usuario
+
     this.buscarProdutos()
   }
 
@@ -120,6 +131,7 @@ export class ProdutosComponent implements OnInit {
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Validação
 
   validarProdutoForm(): boolean {
     let valido = true
@@ -235,8 +247,47 @@ export class ProdutosComponent implements OnInit {
     })
   }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////
+  // Utils
 
+  exportarProdutosExcel(): void {
+    // Espaçamento das colunas
+    const colProp = [{wch: 25}, {wch: 10}]
 
+    // Merge em duas ou mais linhas ou colunas ou linhas
+    const mergeProp = [
+      { s: { r: 0, c: 2 }, e: { r: 0, c: 4 } }
+    ]
+
+    let array = [
+      ["Controle de Vendas", "", `Usuario: ${this.nomeUsuario}`],
+      [],
+      ["Nome/Descrição", "Preço (R$)"]
+    ]
+
+    let a = this.produtosFiltrado.map((produto: any) => {
+      return [
+        produto.nome,
+        produto.preco
+      ]
+    })
+
+    array.push(...a)
+
+    let workSheet = XLSX.utils.aoa_to_sheet(array)
+    workSheet['!cols'] = colProp
+    workSheet['!merges'] = mergeProp
+
+    let workbook = XLSX.utils.book_new()
+    let nomeSheet = `Produtos`
+    
+    XLSX.utils.book_append_sheet(workbook, workSheet, nomeSheet)
+
+    // Força o download
+    let dataMs = Date.parse((new Date()).toString())
+    let fileName = `Produtos_${dataMs}`;
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
+  }
 
   filtrar(): void {
     this.pagina = 1
