@@ -1,6 +1,6 @@
 <main class="main">
     <header class="header">
-        <div class="menu-botao" (click)="abrirFecharSidenav()">
+        <div class="menu-botao" (click)="abrirFecharSidenav()" title="Abrir/Fechar menu">
             <i class="bi bi-list"></i>
         </div>
 
@@ -11,7 +11,7 @@
 
         <div class="menu-separador"></div>
 
-        <div class="menu-botao botao-fechar" (click)="this.sessaoService.sairSessao()">
+        <div class="menu-botao botao-fechar" (click)="this.sessaoService.sairSessao()" title="Sair do sistema">
             <i class="bi bi-box-arrow-right"></i>
         </div>
     

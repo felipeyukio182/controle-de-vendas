@@ -6,7 +6,7 @@
     <div *ngIf="!carregandoService.carregando">
         <div *ngIf="telaAtiva == 'consultar'" class="conteudo">
             <div class="d-flex justify-content-between align-items-center height-50px">
-                <button class="btn btn-sm btn-primary" title="Novo Produto" (click)="irParaIncluirVenda()">+ Nova Venda</button>
+                <button class="btn btn-sm btn-primary" title="Nova venda" (click)="irParaIncluirVenda()">+ Nova Venda</button>
 
                 <div class="d-flex flex-column align-items-center justify-content-center">
                     <span>Vendas do periodo:</span>
@@ -24,12 +24,12 @@
                         <input class="form-control form-control-sm" type="date" id="dataFinal" [(ngModel)]="dataFinal">
                     </div>
 
-                    <button class="btn btn-sm btn-outline-primary" (click)="pesquisarVendasNoPeriodo()">Pesquisar</button>
+                    <button class="btn btn-sm btn-outline-primary" title="Pesquisar no periodo" (click)="pesquisarVendasNoPeriodo()">Pesquisar</button>
 
                 </div>
                 <div>
-                    <button class="btn btn-sm btn-success me-3" (click)="exportarVendasExcel()">Exportar em Excel</button>
-                    <button class="btn btn-sm btn-danger" (click)="voltarInicio()">&times;</button>
+                    <button class="btn btn-sm btn-success me-3" title="Excel" (click)="exportarVendasExcel()">Exportar em Excel</button>
+                    <button class="btn btn-sm btn-danger" title="Voltar ao inicio" (click)="voltarInicio()">&times;</button>
                 </div>
             </div>
             <div>
@@ -184,12 +184,12 @@
                                 <table class="table table-sm table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>Id</th>
-                                            <th>Descrição/Nome</th>
-                                            <th>Quantidade</th>
-                                            <th>Preço UN(R$)</th>
-                                            <th>Total Prod.(R$)</th>
+                                            <th style="width: 5%;">#</th>
+                                            <th style="width: 5%;">Id</th>
+                                            <th style="width: 40%;">Descrição/Nome</th>
+                                            <th style="width: 15%;">Quantidade</th>
+                                            <th style="width: 15%;">Preço Un.(R$)</th>
+                                            <th style="width: 20%;">Total Produto (R$)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -227,12 +227,12 @@
                                 <table class="table table-sm table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>Id</th>
-                                            <th>Descrição/Nome</th>
-                                            <th>Quantidade</th>
-                                            <th>Preço UN(R$)</th>
-                                            <th>Total Prod.(R$)</th>
+                                            <th style="width: 5%;">#</th>
+                                            <th style="width: 5%;">Id</th>
+                                            <th style="width: 40%;">Descrição/Nome</th>
+                                            <th style="width: 15%;">Quantidade</th>
+                                            <th style="width: 15%;">Preço Un.(R$)</th>
+                                            <th style="width: 20%;">Total Produto (R$)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
