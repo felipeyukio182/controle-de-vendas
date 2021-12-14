@@ -195,8 +195,8 @@
                                     <tbody>
                                         <tr *ngFor="let p of listaProdutosAdicionados.slice((paginaProduto - 1) * tamanhoPaginaProduto, paginaProduto * tamanhoPaginaProduto), index as i">
                                             <td class="d-flex align-items-center justify-content-center">
-                                                <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (clique)="editarProduto(i)" [desabilitado]="telaAtiva == 'excluir'"></app-botao-mini>
-                                                <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (clique)="excluirProduto(i)" [desabilitado]="telaAtiva == 'excluir'"></app-botao-mini>
+                                                <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (clique)="editarProduto(i)" [desabilitado]="telaAtiva == 'excluir' || estaEditandoProdutoVenda"></app-botao-mini>
+                                                <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (clique)="excluirProduto(i)" [desabilitado]="telaAtiva == 'excluir' || estaEditandoProdutoVenda"></app-botao-mini>
                                             </td>
                                             <td>{{ p?.id }}</td>
                                             <td>{{ p?.nome }}</td>
@@ -238,8 +238,8 @@
                                     <tbody>
                                         <tr *ngFor="let p of listaProdutosAdicionados.slice((paginaTotal - 1) * tamanhoPaginaTotal, paginaTotal * tamanhoPaginaTotal), index as i">
                                             <td class="d-flex align-items-center justify-content-center">
-                                                <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (clique)="editarProduto(i)" [desabilitado]="telaAtiva == 'excluir'"></app-botao-mini>
-                                                <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (clique)="excluirProduto(i)" [desabilitado]="telaAtiva == 'excluir'"></app-botao-mini>
+                                                <app-botao-mini titulo="Editar produto" icone="bi bi-pencil" estiloCss="btn-warning" (clique)="editarProduto(i)" [desabilitado]="telaAtiva == 'excluir' || estaEditandoProdutoVenda"></app-botao-mini>
+                                                <app-botao-mini titulo="Excluir produto" icone="bi bi-trash" estiloCss="btn-danger" (clique)="excluirProduto(i)" [desabilitado]="telaAtiva == 'excluir' || estaEditandoProdutoVenda"></app-botao-mini>
                                             </td>
                                             <td>{{ p?.id }}</td>
                                             <td>{{ p?.nome }}</td>

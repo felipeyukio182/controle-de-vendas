@@ -245,8 +245,6 @@ export class VendasComponent implements OnInit {
     this.telaAtiva = "consultar"
     this.telaTitulo = ""
 
-    this.navAtiva = 1
-
     this.resetarVenda()
 
     this.ordenacaoService.resetarOrdenacao()
@@ -295,11 +293,11 @@ export class VendasComponent implements OnInit {
     document.getElementById("produto")?.focus()
   }
   editarProduto(i: number): void {
-    this.indexProdutoEditado = i
+    this.indexProdutoEditado = i + ((this.paginaProduto - 1) * this.tamanhoPaginaProduto)
     this.estaEditandoProdutoVenda = true
-    this.produtoSelecionado = this.listaProdutosAdicionados[i]
-    this.quantidadeProdutoSelecionado = this.listaProdutosAdicionados[i].quantidade
-    this.precoProdutoSelecionado = this.listaProdutosAdicionados[i].preco
+    this.produtoSelecionado = this.listaProdutosAdicionados[this.indexProdutoEditado]
+    this.quantidadeProdutoSelecionado = this.listaProdutosAdicionados[this.indexProdutoEditado].quantidade
+    this.precoProdutoSelecionado = this.listaProdutosAdicionados[this.indexProdutoEditado].preco
     this.navAtiva = 2
   }
   editarProdutoCancelar(): void {
@@ -313,8 +311,9 @@ export class VendasComponent implements OnInit {
     this.navAtiva = 2
   }
   excluirProduto(i: number): void {
-    this.totalVenda -= parseFloat(this.listaProdutosAdicionados[i].quantidade) * parseFloat(this.listaProdutosAdicionados[i].preco)
-    this.listaProdutosAdicionados.splice(i, 1)
+    let index = i + ((this.paginaProduto - 1) * this.tamanhoPaginaProduto)
+    this.totalVenda -= parseFloat(this.listaProdutosAdicionados[index].quantidade) * parseFloat(this.listaProdutosAdicionados[index].preco)
+    this.listaProdutosAdicionados.splice(index, 1)
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -636,6 +635,11 @@ export class VendasComponent implements OnInit {
     this.clienteSelecionado = null
     this.produtoSelecionado = null
     this.listaProdutosAdicionados = []
+
+    this.navAtiva = 1
+
+    this.estaEditandoProdutoVenda = false
+    this.indexProdutoEditado = -1
   }
 
   voltarInicio(): void {
