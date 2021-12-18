@@ -581,25 +581,28 @@ export class VendasComponent implements OnInit {
 
   exportarVendasExcel(): void {
     // Espaçamento das colunas
-    const colProp = [{wch: 38}, {wch: 18}, {wch: 20}, {wch: 15}]
+    const colProp = [{wch: 5}, {wch: 38}, {wch: 18}, {wch: 20}, {wch: 15}]
 
     // Merge em duas ou mais linhas ou colunas ou linhas
     const mergeProp = [
-      { s: { r: 0, c: 2 }, e: { r: 0, c: 4 } }
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 1 } },
+      { s: { r: 0, c: 3 }, e: { r: 0, c: 5 } },
+      { s: { r: 2, c: 0 }, e: { r: 2, c: 1 } },
     ]
 
     let array = [
-      ["Controle de Vendas", "", `Usuario: ${this.nomeUsuario}`],
+      ["Controle de Vendas", "", "", `Usuario: ${this.nomeUsuario}`],
       [],
       [`Vendas do periodo: ${this.dataInicialPesquisada} - ${this.dataFinalPesquisada}`],
       [],
-      ["Cliente", "CNPJ/CPF", "Data", "Total Venda (R$)"]
+      ["Id", "Cliente", "CNPJ/CPF", "Data", "Total Venda (R$)"]
     ]
 
     let totalPeriodo = 0
     let a = this.vendasFiltrado.map((venda: any) => {
       totalPeriodo += venda.total
       return [
+        venda.id,
         venda.cliente,
         venda.cnpjCpf,
         venda.dataFormatada,
@@ -607,7 +610,7 @@ export class VendasComponent implements OnInit {
       ]
     })
 
-    array.push(...a, ["", "", "Total (R$)", totalPeriodo.toFixed(2).toString()])
+    array.push(...a, ["", "", "", "Total (R$)", totalPeriodo.toFixed(2).toString()])
 
     let workSheet = XLSX.utils.aoa_to_sheet(array)
     workSheet['!cols'] = colProp
