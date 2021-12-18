@@ -60,6 +60,7 @@ export class VendasComponent implements OnInit {
 
   public vendaSelecionada: any = null
   public vendaFiltro: any = {
+    id: "",
     cliente: "",
     cnpjCpf: "",
     dataFormatada: "",
@@ -626,7 +627,7 @@ export class VendasComponent implements OnInit {
   filtrar(): void {
     console.log(this.vendas)
     this.pagina = 1
-    this.vendasFiltrado = this.filtroService.filtrar(this.vendaFiltro, this.vendas, ["cliente", "cnpjCpf", "dataFormatada"])
+    this.vendasFiltrado = this.filtroService.filtrar(this.vendaFiltro, this.vendas, ["id", "cliente", "cnpjCpf", "dataFormatada"])
   }
 
   resetarVenda(): void {

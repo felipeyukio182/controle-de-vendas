@@ -1,11 +1,11 @@
-import { AfterViewChecked, Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { AfterViewChecked, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-paginacao',
   templateUrl: './paginacao.component.html',
   styleUrls: ['./paginacao.component.css']
 })
-export class PaginacaoComponent implements OnInit, AfterViewChecked {
+export class PaginacaoComponent implements OnInit, OnChanges {
 
   @Input() pagina: any = 1
   @Input() itensPorPagina: any = 10
@@ -28,14 +28,25 @@ export class PaginacaoComponent implements OnInit, AfterViewChecked {
       this.arrayPaginas.push(i)
     }
   }
-  
-  ngAfterViewChecked() {
-    this.arrayPaginas = []
-    this.qtdePaginas = Math.ceil(this.tamanhoLista/this.itensPorPagina)
-    for(let i = 0; i < this.qtdePaginas; i++) {
-      this.arrayPaginas.push(i)
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // console.log(changes)
+    if(changes['tamanhoLista']){      
+      this.arrayPaginas = []
+      this.qtdePaginas = Math.ceil(this.tamanhoLista/this.itensPorPagina)
+      for(let i = 0; i < this.qtdePaginas; i++) {
+        this.arrayPaginas.push(i)
+      }
     }
   }
+  
+  // ngAfterViewChecked() {
+  //   this.arrayPaginas = []
+  //   this.qtdePaginas = Math.ceil(this.tamanhoLista/this.itensPorPagina)
+  //   for(let i = 0; i < this.qtdePaginas; i++) {
+  //     this.arrayPaginas.push(i)
+  //   }
+  // }
 
   selecionarPagina(pagina: number) {
     this.pagina = pagina

@@ -38,19 +38,23 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%;">#</th>
-                                <th style="width: 35%;" >
+                                <th style="width: 5%;">
+                                    <app-label-ordenacao label="Id" nome="id" atrib="id" [arr]="vendasFiltrado"></app-label-ordenacao>
+                                    <app-input-padrao [(model)]="vendaFiltro.id" (modelChange)="filtrar()"></app-input-padrao>
+                                </th>
+                                <th style="width: 35%;">
                                     <app-label-ordenacao label="Cliente" nome="cliente" atrib="cliente" [arr]="vendasFiltrado"></app-label-ordenacao>
                                     <app-input-padrao [(model)]="vendaFiltro.cliente" (modelChange)="filtrar()"></app-input-padrao>
                                 </th>
-                                <th style="width: 25%;" >
+                                <th style="width: 20%;">
                                     <app-label-ordenacao label="CNPJ/CPF" nome="cnpjCpf" atrib="cnpjCpf" [arr]="vendasFiltrado"></app-label-ordenacao>
                                     <app-input-padrao [(model)]="vendaFiltro.cnpjCpf" (modelChange)="filtrar()"></app-input-padrao>
                                 </th>
-                                <th style="width: 20%;" >
+                                <th style="width: 20%;">
                                     <app-label-ordenacao label="Data" nome="data" atrib="data" [arr]="vendasFiltrado"></app-label-ordenacao>
                                     <app-input-padrao [(model)]="vendaFiltro.dataFormatada" (modelChange)="filtrar()"></app-input-padrao>
                                 </th>
-                                <th style="width: 15%;" >
+                                <th style="width: 15%;">
                                     <app-label-ordenacao label="Total" nome="total" atrib="total" [arr]="vendasFiltrado"></app-label-ordenacao>
                                 </th>
                             </tr>
@@ -61,6 +65,7 @@
                                     <app-botao-mini titulo="Editar venda" icone="bi bi-pencil" estiloCss="btn-warning" (click)="irParaEditarVenda(venda)"></app-botao-mini>
                                     <app-botao-mini titulo="Excluir venda" icone="bi bi-trash" estiloCss="btn-danger" (click)="irParaExcluirVenda(venda)"></app-botao-mini>
                                 </td>
+                                <td>{{ venda.id }}</td>
                                 <td>{{ venda.cliente }}</td>
                                 <td>{{ venda.cnpjCpf }}</td>
                                 <td>{{ venda.dataFormatada }}</td>
@@ -71,7 +76,7 @@
                     </table>
                 </div>
                 <div class="d-flex justify-content-center align-items-center height-50px">
-                    <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="vendas.length"></app-paginacao>
+                    <app-paginacao [itensPorPagina]="tamanhoPagina" [(pagina)]="pagina" [tamanhoLista]="vendasFiltrado.length"></app-paginacao>
                 </div>
             </div>
         </div>
