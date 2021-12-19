@@ -67,6 +67,9 @@ export class MenuPrincipalComponent implements OnInit {
   }
 
   abrirFecharSidenav(): void {
+    for(let o of this.menuOpcoes) {
+      o.estaAberta = false
+    }
     this.sidenavEstaAberta = !this.sidenavEstaAberta
   }
   abrirFecharOpcaoMenu(opcao?: any): void {

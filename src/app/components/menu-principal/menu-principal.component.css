@@ -1,3 +1,8 @@
+:root {
+    --menu-li-height: 24px;
+    --menu-ul-max-height: 0px;
+}
+
 .main {
     min-height: 100vh;
     min-width: 100%;
@@ -65,6 +70,15 @@
 }
 .logo-div .logo-titulo > span {
     white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-100px);
+    transition: 1s;
+}
+.sidenav-aberta .logo-div .logo-titulo > span {
+    white-space: nowrap;
+    opacity: 1;
+    transform: translateX(0px);
+    /* transition: 0.5s; */
 }
 
 .logo-alface {
@@ -127,12 +141,13 @@
 }
 .lista-sidenav-sub-opcoes-aberta > li {
     cursor: pointer;  
+    height: var(--menu-li-height);
 }
 .lista-sidenav-sub-opcoes-aberta > li:hover {
     color: white;
 }
 .lista-sidenav-sub-opcoes-aberta.lista-sidenav-sub-opcoes-mostrar {
-    max-height: 200px;
+    max-height: 48px;
     transition: 0.5s;
 }
 

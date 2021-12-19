@@ -22,14 +22,14 @@
                 <img class="logo-alface" src="assets/img/alface-logo.png" alt="logo">
             </a>
             <div class="logo-titulo">
-                <span *ngIf="sidenavEstaAberta">Controle de vendas</span>
+                <span>Controle de vendas</span>
             </div>
         </div>
 
         <ul class="lista-sidenav">
-            <li class="lista-sidenav-li" *ngFor="let opcao of menuOpcoes" (click)="abrirFecharOpcaoMenu(opcao)">
+            <li class="lista-sidenav-li" *ngFor="let opcao of menuOpcoes">
                 
-                <div class="lista-sidenav-opcoes" (mouseover)="mostrarPopUp(opcao)" (mouseout)="esconderPopUp(opcao)" 
+                <div class="lista-sidenav-opcoes" (mouseover)="mostrarPopUp(opcao)" (mouseout)="esconderPopUp(opcao)" (click)="abrirFecharOpcaoMenu(opcao)"
                      [ngClass]="sidenavEstaAberta ? ( opcao.estaAberta ? 'lista-sidenav-opcoes-aberta lista-sidenav-opcao-ativa' : 'lista-sidenav-opcoes-aberta' ) : ''">
                     <div class="lista-sidenav-opcoes-div">
                         <i class="lista-sidenav-icone {{ opcao.icone }}"></i>

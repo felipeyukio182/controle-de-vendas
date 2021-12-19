@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { HeaderService } from 'src/app/services/header.service';
 import { SessaoService } from 'src/app/services/sessao.service';
 
 @Component({
@@ -14,8 +15,12 @@ export class InicioComponent implements OnInit {
 
   constructor(
     private sessaoService: SessaoService,
+    public headerService: HeaderService,
     private router: Router
-  ) { }
+  ) {
+    this.headerService.icone = "bi bi-house-door"
+    this.headerService.titulo = "Menu"
+  }
 
   ngOnInit(): void {
     this.usuario = this.sessaoService.buscarUsuario()
