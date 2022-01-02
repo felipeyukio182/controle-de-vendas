@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { SessaoService } from '../../services/sessao.service';
 import { environment } from '../../../environments/environment'
 import { CarregandoService } from 'src/app/services/carregando.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,8 @@ export class LoginComponent implements OnInit {
               private router: Router,
               private sessaoService: SessaoService,
               private formBuilder: FormBuilder,
-              public carregandoService: CarregandoService) { }
+              public carregandoService: CarregandoService,
+              private toast: ToastService) { }
 
   ngOnInit(): void {
     let estaLogado = this.sessaoService.validarSessao()
@@ -54,28 +56,17 @@ export class LoginComponent implements OnInit {
           this.router.navigate(["/inicio"])
 
         } else if(retorno.status == "erro") {
-          console.log("Usuario ou senha incorretos...")
           console.log(retorno)
-          // this.showMessage("Usuario ou senha incorretos...", true)
+          this.toast.erro("Usuario ou senha incorretos...")
         }
 
       },
       (err: any) => {
         this.carregandoService.carregando = false
-        // this.showMessage("Erro ao requisitar servidor...", true)
-        console.log("Deu errado")
+        this.toast.erroAoRequisitarServidor()
         console.log(err)
       }
     )
   }
-
-  // showMessage(msg: string, isError: boolean = false) {
-  //   return this.snackBar.open(msg, '', {
-  //     duration: 3000,
-  //     horizontalPosition: 'right',
-  //     verticalPosition: 'top',
-  //     panelClass: isError ? ['msgError'] : ['msgSuccess']
-  //   })
-  // }
 
 }

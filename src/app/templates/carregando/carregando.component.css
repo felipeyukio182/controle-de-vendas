@@ -8,3 +8,21 @@
     min-height: 85vh;
 }
 
+.circulo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: solid 5px rgba(0, 0, 0, 0.1);
+    border-top: solid 4px #84bd93;
+    animation: rotacionarCirculo infinite 1s linear;
+}
+
+@keyframes rotacionarCirculo {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+

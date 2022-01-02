@@ -1,4 +1,10 @@
-<div *ngIf="carregandoService.carregando" class="carregando">
+<!-- <div *ngIf="carregandoService.carregando" class="carregando">
     <div class="spinner-border" role="status"></div>
+    <span style="margin-left: 10px;">Carregando...</span>
+</div> -->
+
+
+<div *ngIf="carregandoService.carregando" class="carregando">
+    <span class="circulo"></span>
     <span style="margin-left: 10px;">Carregando...</span>
 </div>
